@@ -1,3 +1,13 @@
+# Reel Shelf 1.1 plan
+
+1. Expand the existing picker to eight independent add-on shelves. Keep the 1.0 settings as slot one and give every slot its own source folder and label. Add a remote-operated manager with add, rename, change folder, browse, and remove actions.
+2. Make Home work with an empty Kodi library. Put custom shelves first, put library entry points under More only when populated, and use the top bar for Home, shelf management, video add-ons, and favourites.
+3. Bring artwork and metadata into the selected card. Keep the focus outline, reuse Kodi's list navigation, and allow each shelf to open its full source folder. Use a fallback for thin metadata or missing artwork.
+4. Add an artwork-led title overview with Play, Resume, or Episodes. Give local series a next-unwatched-episode shortcut alongside native season browsing. Keep Kodi's native title actions accessible from More details and make local Continue Watching cards resume directly.
+5. Build a 1.1.0 upgrade ZIP and verify the empty and populated states, multiple folders from the same provider, renamed 1.0 shelf persistence, provider failures, playback, and remote focus with the portable Kodi harness.
+
+---
+
 # Reel Shelf • Kodi skin for Fire TV Stick
 
 ## What the first release should feel like

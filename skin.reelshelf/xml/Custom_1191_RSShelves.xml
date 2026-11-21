@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1191">
+	<defaultcontrol>200</defaultcontrol>
+	<backgroundcolor>rs_bg</backgroundcolor>
+	<onload condition="$EXP[rs_managing_shelf]">SetFocus(301)</onload>
+	<controls>
+		<control type="label">
+			<left>92</left>
+			<top>45</top>
+			<width>1600</width>
+			<height>84</height>
+			<font>font45_title</font>
+			<textcolor>rs_text</textcolor>
+			<label>$LOCALIZE[31729]</label>
+		</control>
+		<control type="label">
+			<left>94</left>
+			<top>143</top>
+			<width>1600</width>
+			<height>52</height>
+			<font>font27</font>
+			<textcolor>rs_muted</textcolor>
+			<label>$LOCALIZE[31731]</label>
+		</control>
+		<control type="grouplist" id="200">
+			<left>92</left>
+			<top>220</top>
+			<width>750</width>
+			<height>810</height>
+			<orientation>vertical</orientation>
+			<itemgap>12</itemgap>
+			<onup>noop</onup>
+			<ondown>noop</ondown>
+			<control type="button" id="210">
+				<width>750</width>
+				<include>RS_ActionButton</include>
+				<label>+  $LOCALIZE[31728]</label>
+				<visible>$EXP[rs_has_free_slot]</visible>
+				<onclick>SetProperty(rs_slot,$VAR[RS_NextShelf],home)</onclick>
+				<onclick>ActivateWindow(1190)</onclick>
+			</control>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="211" />
+				<param name="name" value="$VAR[RS_ShelfName1]" />
+				<param name="key" value="rs.addon" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="212" />
+				<param name="name" value="$VAR[RS_ShelfName2]" />
+				<param name="key" value="rs.addon2" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="213" />
+				<param name="name" value="$VAR[RS_ShelfName3]" />
+				<param name="key" value="rs.addon3" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="214" />
+				<param name="name" value="$VAR[RS_ShelfName4]" />
+				<param name="key" value="rs.addon4" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="215" />
+				<param name="name" value="$VAR[RS_ShelfName5]" />
+				<param name="key" value="rs.addon5" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="216" />
+				<param name="name" value="$VAR[RS_ShelfName6]" />
+				<param name="key" value="rs.addon6" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="217" />
+				<param name="name" value="$VAR[RS_ShelfName7]" />
+				<param name="key" value="rs.addon7" />
+			</include>
+			<include content="RS_ManagerSlot">
+				<param name="id" value="218" />
+				<param name="name" value="$VAR[RS_ShelfName8]" />
+				<param name="key" value="rs.addon8" />
+			</include>
+		</control>
+		<control type="group">
+			<visible>$EXP[rs_managing_shelf]</visible>
+			<control type="image">
+				<left>892</left>
+				<top>220</top>
+				<width>908</width>
+				<height>500</height>
+				<texture colordiffuse="rs_card">colors/white.png</texture>
+			</control>
+			<control type="label">
+				<left>928</left>
+				<top>246</top>
+				<width>832</width>
+				<height>68</height>
+				<font>font32_title</font>
+				<textcolor>rs_text</textcolor>
+				<label>$VAR[RS_ManagedLabel]</label>
+			</control>
+			<control type="grouplist" id="300">
+				<left>928</left>
+				<top>326</top>
+				<width>830</width>
+				<height>350</height>
+				<orientation>vertical</orientation>
+				<itemgap>14</itemgap>
+				<onleft>200</onleft>
+				<onup>noop</onup>
+				<ondown>noop</ondown>
+				<onback>SetFocus(200)</onback>
+				<control type="button" id="301">
+					<width>830</width>
+					<include>RS_ActionButton</include>
+					<label>$LOCALIZE[31730]</label>
+					<onclick>ActivateWindow(Videos,$ESCVAR[RS_ManagedPath],return)</onclick>
+				</control>
+				<control type="button" id="302">
+					<width>830</width>
+					<include>RS_ActionButton</include>
+					<label>$LOCALIZE[31714]</label>
+					<onclick>Skin.SetString($INFO[Window(home).Property(rs_slot),,.label])</onclick>
+				</control>
+				<control type="button" id="303">
+					<width>830</width>
+					<include>RS_ActionButton</include>
+					<label>$LOCALIZE[31732]</label>
+					<onclick>ActivateWindow(1190)</onclick>
+				</control>
+				<control type="button" id="304">
+					<width>830</width>
+					<include>RS_ActionButton</include>
+					<label>$LOCALIZE[31733]</label>
+					<onclick>Skin.Reset($INFO[Window(home).Property(rs_slot),,.path])</onclick>
+					<onclick>Skin.Reset($INFO[Window(home).Property(rs_slot),,.id])</onclick>
+					<onclick>Skin.Reset($INFO[Window(home).Property(rs_slot),,.label])</onclick>
+					<onclick>ClearProperty(rs_slot,home)</onclick>
+					<onclick>SetFocus(210)</onclick>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

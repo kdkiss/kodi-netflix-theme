@@ -763,3 +763,103 @@ msgstr "System"
 #~ msgctxt "#31138"
 #~ msgid "Player process info"
 #~ msgstr "Player-Informationen"
+
+msgctxt "#31702"
+msgid "Home"
+msgstr "Start"
+
+msgctxt "#31703"
+msgid "More"
+msgstr "Mehr"
+
+msgctxt "#31704"
+msgid "Video add-ons"
+msgstr "Video-Add-ons"
+
+msgctxt "#31714"
+msgid "Rename shelf"
+msgstr "Regal umbenennen"
+
+msgctxt "#31715"
+msgid "Add-on shelf"
+msgstr "Add-on-Regal"
+
+msgctxt "#31717"
+msgid "Use this folder"
+msgstr "Diesen Ordner verwenden"
+
+msgctxt "#31718"
+msgid "Up one level"
+msgstr "Übergeordneter Ordner"
+
+msgctxt "#31719"
+msgid "Loading..."
+msgstr "Wird geladen …"
+
+msgctxt "#31720"
+msgid "Unavailable or empty. Choose another folder or check the add-on."
+msgstr "Nicht verfügbar oder leer"
+
+msgctxt "#31723"
+msgid "Choose an add-on folder"
+msgstr "Ordner für Regal wählen"
+
+msgctxt "#31725"
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgctxt "#31726"
+msgid "Build your home screen"
+msgstr "Startseite einrichten"
+
+msgctxt "#31727"
+msgid "Choose a folder from a video add-on to add your first shelf."
+msgstr "Wähle einen Ordner aus einem Video-Add-on für dein erstes Regal."
+
+msgctxt "#31728"
+msgid "Add shelf"
+msgstr "Regal hinzufügen"
+
+msgctxt "#31729"
+msgid "Manage shelves"
+msgstr "Regale verwalten"
+
+msgctxt "#31730"
+msgid "Browse full shelf"
+msgstr "Das ganze Regal durchsuchen"
+
+msgctxt "#31731"
+msgid "Add up to eight shelves from any installed video add-on."
+msgstr "Füge bis zu acht Regale aus installierten Video-Add-ons hinzu."
+
+msgctxt "#31732"
+msgid "Change folder"
+msgstr "Ordner wechseln"
+
+msgctxt "#31733"
+msgid "Remove shelf"
+msgstr "Regal entfernen"
+
+msgctxt "#31734"
+msgid "More details"
+msgstr "Weitere Details"
+
+msgctxt "#31735"
+msgid "Overview"
+msgstr "Übersicht"
+
+msgctxt "#31736"
+msgid "Resume"
+msgstr "Fortsetzen"
+
+msgctxt "#31737"
+msgid "Shelves"
+msgstr "Regale"
+
+msgctxt "#31738"
+msgid "Empty or unavailable"
+msgstr "Leer oder nicht verfügbar"
+
+msgctxt "#31739"
+msgid "Next episode"
+msgstr "Nächste Folge"

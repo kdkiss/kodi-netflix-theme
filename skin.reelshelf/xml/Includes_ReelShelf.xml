@@ -1,173 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<!-- Reel Shelf shared definitions. Card 280x158, 16 px gutter, focus ring = white 4 px + dark 2 px outer. -->
-	<constant name="rs_card_w">280</constant>
-	<constant name="rs_card_h">158</constant>
-
-	<expression name="rs_wide_art">!String.IsEmpty(ListItem.Art(landscape)) | !String.IsEmpty(ListItem.Art(fanart)) | !String.IsEmpty(ListItem.Art(tvshow.fanart)) | [String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.Art(thumb))]</expression>
-	<expression name="rs_poster_only">![$EXP[rs_wide_art]] + !String.IsEmpty(ListItem.Art(poster))</expression>
-	<expression name="rs_no_art">![$EXP[rs_wide_art]] + String.IsEmpty(ListItem.Art(poster))</expression>
-	<expression name="rs_is_episode">String.IsEqual(ListItem.DBType,episode)</expression>
-	<!-- Hidden containers never fetch on a cold start, so shelf groups count as visible until rs_settled (set 3 s after load) -->
-	<expression name="rs_scrolling">Container(5010).Scrolling | Container(5020).Scrolling | Container(5100).Scrolling | Container(5110).Scrolling | Container(5120).Scrolling | Container(5130).Scrolling | Container(5200).Scrolling</expression>
 	<expression name="rs_unsettled">String.IsEmpty(Window(home).Property(rs_settled))</expression>
-	<expression name="rs_empty">!$EXP[rs_unsettled] + String.IsEmpty(Skin.String(rs.addon.path)) + Integer.IsEqual(Container(5010).NumItems,0) + !Container(5010).IsUpdating + Integer.IsEqual(Container(5020).NumItems,0) + !Container(5020).IsUpdating + Integer.IsEqual(Container(5100).NumItems,0) + !Container(5100).IsUpdating + Integer.IsEqual(Container(5110).NumItems,0) + !Container(5110).IsUpdating + Integer.IsEqual(Container(5120).NumItems,0) + !Container(5120).IsUpdating + Integer.IsEqual(Container(5130).NumItems,0) + !Container(5130).IsUpdating + Integer.IsEqual(Container(5200).NumItems,0) + !Container(5200).IsUpdating</expression>
-	<!-- ponytail: System.AddonIsEnabled() rejects $INFO[] ids in conditions, so a disabled/missing add-on is detected by its folder returning 0 items (rs_addon_unavail). Upgrade: validate rs.addon.id in a script. -->
-	<expression name="rs_addon_ok">$EXP[rs_addon_set]</expression>
-	<expression name="rs_addon_unavail">$EXP[rs_addon_set] + Integer.IsEqual(Container(5200).NumItems,0) + !Container(5200).IsUpdating</expression>
-	<expression name="rs_addon_set">!String.IsEmpty(Skin.String(rs.addon.path))</expression>
-
-	<!-- Hero binding: Window(home).Property(rs_shelf) = id of the last focused shelf list (set in its onfocus).
-	     To add a shelf: add its id to the four RS_Hero* variables below and to rs_empty. -->
-	<variable name="RS_HeroTitle">
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010)">$INFO[Container(5010).ListItem.Label]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + String.IsEmpty(Container(5020).ListItem.TVShowTitle)">$INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020)">$INFO[Container(5020).ListItem.TVShowTitle]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100)">$INFO[Container(5100).ListItem.Label]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + String.IsEmpty(Container(5110).ListItem.TVShowTitle)">$INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110)">$INFO[Container(5110).ListItem.TVShowTitle]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120)">$INFO[Container(5120).ListItem.Label]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130)">$INFO[Container(5130).ListItem.Label]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200)">$INFO[Container(5200).ListItem.Label]</value>
-		<value></value>
-	</variable>
-	<variable name="RS_HeroPlot">
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010)">$INFO[Container(5010).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020)">$INFO[Container(5020).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100)">$INFO[Container(5100).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110)">$INFO[Container(5110).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120)">$INFO[Container(5120).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130)">$INFO[Container(5130).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200)">$INFO[Container(5200).ListItem.Plot]</value>
-		<value></value>
-	</variable>
-	<variable name="RS_HeroMeta">
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Year) + !String.IsEmpty(Container(5010).ListItem.Duration)">$INFO[Container(5010).ListItem.Year]   |   $INFO[Container(5010).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Year)">$INFO[Container(5010).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Duration)">$INFO[Container(5010).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + !Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + !Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E$INFO[Container(5020).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Season) + !String.IsEmpty(Container(5020).ListItem.Episode) + Integer.IsLess(Container(5020).ListItem.Season,10) + Integer.IsLess(Container(5020).ListItem.Episode,10) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">S0$INFO[Container(5020).ListItem.Season]E0$INFO[Container(5020).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Title] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Year] · $INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + String.IsEmpty(Container(5020).ListItem.Title) + !String.IsEmpty(Container(5020).ListItem.Year) + String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + String.IsEmpty(Container(5020).ListItem.Title) + String.IsEmpty(Container(5020).ListItem.Year) + !String.IsEmpty(Container(5020).ListItem.Duration)">$INFO[Container(5020).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Year) + !String.IsEmpty(Container(5100).ListItem.Duration)">$INFO[Container(5100).ListItem.Year]   |   $INFO[Container(5100).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Year)">$INFO[Container(5100).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Duration)">$INFO[Container(5100).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + !Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + !Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E$INFO[Container(5110).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Season) + !String.IsEmpty(Container(5110).ListItem.Episode) + Integer.IsLess(Container(5110).ListItem.Season,10) + Integer.IsLess(Container(5110).ListItem.Episode,10) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">S0$INFO[Container(5110).ListItem.Season]E0$INFO[Container(5110).ListItem.Episode]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Title] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Year] · $INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + String.IsEmpty(Container(5110).ListItem.Title) + !String.IsEmpty(Container(5110).ListItem.Year) + String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + String.IsEmpty(Container(5110).ListItem.Title) + String.IsEmpty(Container(5110).ListItem.Year) + !String.IsEmpty(Container(5110).ListItem.Duration)">$INFO[Container(5110).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Year) + !String.IsEmpty(Container(5120).ListItem.Duration)">$INFO[Container(5120).ListItem.Year]   |   $INFO[Container(5120).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Year)">$INFO[Container(5120).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Duration)">$INFO[Container(5120).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Year) + !String.IsEmpty(Container(5130).ListItem.Duration)">$INFO[Container(5130).ListItem.Year]   |   $INFO[Container(5130).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Year)">$INFO[Container(5130).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Duration)">$INFO[Container(5130).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Year) + !String.IsEmpty(Container(5200).ListItem.Duration)">$INFO[Container(5200).ListItem.Year]   |   $INFO[Container(5200).ListItem.Duration(mm)] min</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Year)">$INFO[Container(5200).ListItem.Year]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Duration)">$INFO[Container(5200).ListItem.Duration(mm)] min</value>
-		<value></value>
-	</variable>
-	<variable name="RS_HeroArt">
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Art(fanart))">$INFO[Container(5010).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Art(tvshow.fanart))">$INFO[Container(5010).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5010) + !String.IsEmpty(Container(5010).ListItem.Art(landscape))">$INFO[Container(5010).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Art(fanart))">$INFO[Container(5020).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Art(tvshow.fanart))">$INFO[Container(5020).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5020) + !String.IsEmpty(Container(5020).ListItem.Art(landscape))">$INFO[Container(5020).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Art(fanart))">$INFO[Container(5100).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Art(tvshow.fanart))">$INFO[Container(5100).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5100) + !String.IsEmpty(Container(5100).ListItem.Art(landscape))">$INFO[Container(5100).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Art(fanart))">$INFO[Container(5110).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Art(tvshow.fanart))">$INFO[Container(5110).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5110) + !String.IsEmpty(Container(5110).ListItem.Art(landscape))">$INFO[Container(5110).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Art(fanart))">$INFO[Container(5120).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Art(tvshow.fanart))">$INFO[Container(5120).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5120) + !String.IsEmpty(Container(5120).ListItem.Art(landscape))">$INFO[Container(5120).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Art(fanart))">$INFO[Container(5130).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Art(tvshow.fanart))">$INFO[Container(5130).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5130) + !String.IsEmpty(Container(5130).ListItem.Art(landscape))">$INFO[Container(5130).ListItem.Art(landscape)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Art(fanart))">$INFO[Container(5200).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Art(tvshow.fanart))">$INFO[Container(5200).ListItem.Art(tvshow.fanart)]</value>
-		<value condition="String.IsEqual(Window(home).Property(rs_shelf),5200) + !String.IsEmpty(Container(5200).ListItem.Art(landscape))">$INFO[Container(5200).ListItem.Art(landscape)]</value>
-		<value></value>
-	</variable>
-
+	<expression name="rs_has_shelves">!String.IsEmpty(Skin.String(rs.addon.path)) | !String.IsEmpty(Skin.String(rs.addon2.path)) | !String.IsEmpty(Skin.String(rs.addon3.path)) | !String.IsEmpty(Skin.String(rs.addon4.path)) | !String.IsEmpty(Skin.String(rs.addon5.path)) | !String.IsEmpty(Skin.String(rs.addon6.path)) | !String.IsEmpty(Skin.String(rs.addon7.path)) | !String.IsEmpty(Skin.String(rs.addon8.path))</expression>
+	<expression name="rs_empty">!$EXP[rs_has_shelves] + ![Integer.IsGreater(Container(5010).NumItems,0) | Integer.IsGreater(Container(5020).NumItems,0) | Integer.IsGreater(Container(5100).NumItems,0) | Integer.IsGreater(Container(5110).NumItems,0) | Integer.IsGreater(Container(5120).NumItems,0) | Integer.IsGreater(Container(5130).NumItems,0)] + [!$EXP[rs_unsettled] | ![Library.HasContent(Movies) | Library.HasContent(TVShows)]]</expression>
+	<expression name="rs_view_art">!String.IsEmpty(ListItem.Art(landscape)) | !String.IsEmpty(ListItem.Art(fanart)) | !String.IsEmpty(ListItem.Art(tvshow.fanart)) | !String.IsEmpty(ListItem.Art(thumb))</expression>
+	<expression name="rs_poster_only">!$EXP[rs_view_art] + !String.IsEmpty(ListItem.Art(poster))</expression>
+	<expression name="rs_is_episode">String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.TVShowTitle)</expression>
 	<variable name="RS_CardArt">
-		<value condition="$EXP[rs_is_episode] + !String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value>$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
+
+	<!-- Slot 1 keeps the 1.0 keys so existing shelves survive an update. -->
+	<expression name="rs_has_free_slot">String.IsEmpty(Skin.String(rs.addon.path)) | String.IsEmpty(Skin.String(rs.addon2.path)) | String.IsEmpty(Skin.String(rs.addon3.path)) | String.IsEmpty(Skin.String(rs.addon4.path)) | String.IsEmpty(Skin.String(rs.addon5.path)) | String.IsEmpty(Skin.String(rs.addon6.path)) | String.IsEmpty(Skin.String(rs.addon7.path)) | String.IsEmpty(Skin.String(rs.addon8.path))</expression>
+	<expression name="rs_managing_shelf">[String.IsEqual(Window(home).Property(rs_slot),rs.addon) + !String.IsEmpty(Skin.String(rs.addon.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon2) + !String.IsEmpty(Skin.String(rs.addon2.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon3) + !String.IsEmpty(Skin.String(rs.addon3.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon4) + !String.IsEmpty(Skin.String(rs.addon4.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon5) + !String.IsEmpty(Skin.String(rs.addon5.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon6) + !String.IsEmpty(Skin.String(rs.addon6.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon7) + !String.IsEmpty(Skin.String(rs.addon7.path))] | [String.IsEqual(Window(home).Property(rs_slot),rs.addon8) + !String.IsEmpty(Skin.String(rs.addon8.path))]</expression>
+	<variable name="RS_ShelfLink5200">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5200).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5200).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5201">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5201).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5201).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5202">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5202).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5202).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5203">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5203).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5203).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5204">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5204).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5204).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5205">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5205).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5205).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5206">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5206).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5206).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_ShelfLink5207">
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Container(5207).IsUpdating">$LOCALIZE[31719]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action)) + Integer.IsGreater(Container(5207).NumItems,1)">$LOCALIZE[31730]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rs_shelf_action))">$LOCALIZE[31729]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="RS_NextShelf">
+		<value condition="String.IsEmpty(Skin.String(rs.addon.path))">rs.addon</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon2.path))">rs.addon2</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon3.path))">rs.addon3</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon4.path))">rs.addon4</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon5.path))">rs.addon5</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon6.path))">rs.addon6</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon7.path))">rs.addon7</value>
+		<value condition="String.IsEmpty(Skin.String(rs.addon8.path))">rs.addon8</value>
+	</variable>
+	<variable name="RS_ManagedPath">
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon)">$INFO[Skin.String(rs.addon.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon2)">$INFO[Skin.String(rs.addon2.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon3)">$INFO[Skin.String(rs.addon3.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon4)">$INFO[Skin.String(rs.addon4.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon5)">$INFO[Skin.String(rs.addon5.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon6)">$INFO[Skin.String(rs.addon6.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon7)">$INFO[Skin.String(rs.addon7.path)]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon8)">$INFO[Skin.String(rs.addon8.path)]</value>
+	</variable>
+	<variable name="RS_ManagedLabel">
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon)">$VAR[RS_ShelfName1]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon2)">$VAR[RS_ShelfName2]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon3)">$VAR[RS_ShelfName3]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon4)">$VAR[RS_ShelfName4]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon5)">$VAR[RS_ShelfName5]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon6)">$VAR[RS_ShelfName6]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon7)">$VAR[RS_ShelfName7]</value>
+		<value condition="String.IsEqual(Window(home).Property(rs_slot),rs.addon8)">$VAR[RS_ShelfName8]</value>
+	</variable>
+	<variable name="RS_ShelfName1">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon.label))">$INFO[Skin.String(rs.addon.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName2">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon2.label))">$INFO[Skin.String(rs.addon2.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName3">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon3.label))">$INFO[Skin.String(rs.addon3.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName4">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon4.label))">$INFO[Skin.String(rs.addon4.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName5">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon5.label))">$INFO[Skin.String(rs.addon5.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName6">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon6.label))">$INFO[Skin.String(rs.addon6.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName7">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon7.label))">$INFO[Skin.String(rs.addon7.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+	<variable name="RS_ShelfName8">
+		<value condition="!String.IsEmpty(Skin.String(rs.addon8.label))">$INFO[Skin.String(rs.addon8.label)]</value>
+		<value>$LOCALIZE[31715]</value>
+	</variable>
+
 	<variable name="RS_EpCode">
 		<value condition="Integer.IsLess(ListItem.Season,10) + Integer.IsLess(ListItem.Episode,10)">S0$INFO[ListItem.Season]E0$INFO[ListItem.Episode]</value>
 		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]E$INFO[ListItem.Episode]</value>
@@ -204,363 +164,495 @@
 		<value condition="!String.IsEmpty(Window.Property(rs_label))">$INFO[Window.Property(rs_label)]</value>
 		<value>$LOCALIZE[24001]</value>
 	</variable>
-	<variable name="RS_AddonLabelSetting">
-		<value condition="String.IsEmpty(Skin.String(rs.addon.path))">$LOCALIZE[31722]</value>
-		<value>$VAR[RS_AddonLabel]</value>
-	</variable>
-	<variable name="RS_AddonLabel">
-		<value condition="!String.IsEmpty(Skin.String(rs.addon.label))">$INFO[Skin.String(rs.addon.label)]</value>
-		<value>$LOCALIZE[31715]</value>
+	<variable name="RS_PreviewMeta">
+		<value condition="$EXP[rs_is_episode]">$VAR[RS_EpCode]$INFO[ListItem.Duration(mm),  ·  , min]</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Year]$INFO[ListItem.Genre,  ·  ]</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Genre]</value>
+		<value condition="!String.IsEmpty(ListItem.Year)">$INFO[ListItem.Year]$INFO[ListItem.Duration(mm),  ·  , min]$INFO[ListItem.MPAA,  ·  ]</value>
+		<value condition="!String.IsEmpty(ListItem.Duration)">$INFO[ListItem.Duration(mm),, min]$INFO[ListItem.MPAA,  ·  ]</value>
+		<value>$INFO[ListItem.MPAA]</value>
 	</variable>
 
-	<include name="RS_Hero">
+	<expression name="rs_extended_info">String.IsEqual(Window(home).Property(rs_extended_info),1)</expression>
+	<variable name="RS_DetailsToggleLabel">
+		<value condition="$EXP[rs_extended_info]">$LOCALIZE[31735]</value>
+		<value>$LOCALIZE[31734]</value>
+	</variable>
+	<variable name="RS_DetailLogo">
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[ListItem.Art(clearlogo)]</value>
+	</variable>
+
+	<include name="RS_TitleOverview">
 		<definition>
+			<control type="image">
+				<width>1920</width>
+				<height>1080</height>
+				<texture colordiffuse="rs_bg">colors/white.png</texture>
+			</control>
 			<control type="group">
-				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<visible>!$EXP[rs_extended_info]</visible>
 				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>1920</width>
-					<height>620</height>
-					<texture colordiffuse="rs_bg">colors/white.png</texture>
-				</control>
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>1920</width>
-					<height>600</height>
+					<left>564</left>
+					<width>1356</width>
+					<height>1080</height>
 					<aspectratio>scale</aspectratio>
-					<fadetime>150</fadetime>
-					<texture>$VAR[RS_HeroArt]</texture>
-					<!-- hidden while the focused shelf scrolls (art is bound to the selected item, so it never lags; it just appears ~150 ms after the last move) -->
-					<visible>![$EXP[rs_scrolling]]</visible>
-					<animation effect="fade" start="0" end="100" time="150" delay="150" tween="sine">Visible</animation>
+					<texture background="true">$VAR[RS_CardArt]</texture>
+					<visible>$EXP[rs_view_art]</visible>
 				</control>
 				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>1300</width>
-					<height>600</height>
+					<left>1160</left>
+					<top>90</top>
+					<width>600</width>
+					<height>820</height>
+					<aspectratio>keep</aspectratio>
+					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					<visible>$EXP[rs_poster_only]</visible>
+				</control>
+				<control type="image">
+					<left>564</left>
+					<width>1356</width>
+					<height>1080</height>
 					<texture>reelshelf/grad_h.png</texture>
+					<visible>$EXP[rs_view_art]</visible>
 				</control>
 				<control type="image">
-					<left>0</left>
-					<top>340</top>
+					<top>540</top>
 					<width>1920</width>
-					<height>260</height>
+					<height>540</height>
 					<texture>reelshelf/grad_v.png</texture>
+					<visible>$EXP[rs_view_art]</visible>
 				</control>
-				<control type="label">
-					<left>140</left>
-					<top>190</top>
-					<width>1150</width>
-					<height>80</height>
-					<font>font64</font>
-					<textcolor>rs_text</textcolor>
-					<label>$VAR[RS_HeroTitle]</label>
-				</control>
-				<control type="label">
-					<left>140</left>
-					<top>280</top>
-					<width>1150</width>
-					<height>40</height>
-					<font>font27</font>
-					<textcolor>rs_muted</textcolor>
-					<label>$VAR[RS_HeroMeta]</label>
+				<control type="image">
+					<left>94</left>
+					<top>108</top>
+					<width>580</width>
+					<height>192</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture>$VAR[RS_DetailLogo]</texture>
+					<visible>[!String.IsEmpty(ListItem.Art(tvshow.clearlogo)) | !String.IsEmpty(ListItem.Art(clearlogo))]</visible>
 				</control>
 				<control type="textbox">
-					<left>140</left>
-					<top>335</top>
-					<width>1000</width>
-					<height>117</height>
+					<left>92</left>
+					<top>170</top>
+					<width>820</width>
+					<height>138</height>
+					<aligny>bottom</aligny>
+					<font>font64</font>
+					<textcolor>rs_text</textcolor>
+					<label>$VAR[RS_RowTitle]</label>
+					<visible>String.IsEmpty(ListItem.Art(tvshow.clearlogo)) + String.IsEmpty(ListItem.Art(clearlogo))</visible>
+				</control>
+				<control type="label">
+					<left>94</left>
+					<top>320</top>
+					<width>740</width>
+					<height>52</height>
+					<font>font30_title</font>
+					<textcolor>rs_muted</textcolor>
+					<label>$VAR[RS_PreviewMeta]</label>
+				</control>
+				<control type="textbox">
+					<left>94</left>
+					<top>383</top>
+					<width>710</width>
+					<height>204</height>
 					<font>font27</font>
 					<textcolor>rs_text</textcolor>
-					<label>$VAR[RS_HeroPlot]</label>
+					<label>$INFO[ListItem.Plot]</label>
 				</control>
 			</control>
 		</definition>
 	</include>
 
-	<include name="RS_CardBody">
+	<!-- Kodi's own library supplies the first unwatched episode in season/episode order. -->
+	<include name="RS_NextEpisode">
+		<definition>
+			<control type="list" id="7812">
+				<left>92</left>
+				<top>704</top>
+				<width>622</width>
+				<height>100</height>
+				<orientation>vertical</orientation>
+				<visible>!$EXP[rs_extended_info] + String.IsEqual(ListItem.DBType,tvshow) + Integer.IsGreater(ListItem.DBID,0)</visible>
+				<onup>8</onup>
+				<ondown>noop</ondown>
+				<onclick condition="ListItem.IsResumable">PlayMedia($ESCINFO[ListItem.FileNameAndPath],resume)</onclick>
+				<onclick condition="!ListItem.IsResumable">PlayMedia($ESCINFO[ListItem.FileNameAndPath],noresume)</onclick>
+				<onclick>Dialog.Close(MovieInformation)</onclick>
+				<itemlayout width="622" height="100">
+					<include content="RS_NextEpisodeCard">
+						<param name="background" value="rs_card" />
+						<param name="foreground" value="rs_text" />
+					</include>
+				</itemlayout>
+				<focusedlayout width="622" height="100" condition="Control.HasFocus(7812)">
+					<include content="RS_NextEpisodeCard">
+						<param name="background" value="rs_text" />
+						<param name="foreground" value="rs_bg" />
+					</include>
+				</focusedlayout>
+				<focusedlayout width="622" height="100" condition="!Control.HasFocus(7812)">
+					<include content="RS_NextEpisodeCard">
+						<param name="background" value="rs_card" />
+						<param name="foreground" value="rs_text" />
+					</include>
+				</focusedlayout>
+				<content target="videos" sortby="episode" sortorder="ascending" limit="1" browse="never">videodb://tvshows/titles/$INFO[ListItem.DBID]/-1/?filter=%7B%22type%22%3A%22episodes%22%2C%22rules%22%3A%7B%22and%22%3A%5B%7B%22field%22%3A%22playcount%22%2C%22operator%22%3A%22is%22%2C%22value%22%3A%5B%220%22%5D%7D%5D%7D%7D</content>
+			</control>
+		</definition>
+	</include>
+
+	<include name="RS_NextEpisodeCard">
+		<param name="background" />
+		<param name="foreground" />
 		<definition>
 			<control type="image">
-				<left>16</left>
-				<top>20</top>
-				<width>rs_card_w</width>
-				<height>rs_card_h</height>
+				<width>622</width>
+				<height>100</height>
+				<texture colordiffuse="$PARAM[background]">colors/white.png</texture>
+			</control>
+			<control type="label">
+				<left>22</left>
+				<top>10</top>
+				<width>570</width>
+				<height>40</height>
+				<font>font27</font>
+				<textcolor>$PARAM[foreground]</textcolor>
+				<label>$LOCALIZE[31739]  ·  $VAR[RS_EpCode]</label>
+			</control>
+			<control type="label">
+				<left>22</left>
+				<top>48</top>
+				<width>570</width>
+				<height>42</height>
+				<font>font30_title</font>
+				<textcolor>$PARAM[foreground]</textcolor>
+				<label>$INFO[ListItem.Title]</label>
+			</control>
+		</definition>
+	</include>
+
+	<include name="RS_ActionButton">
+		<height>68</height>
+		<font>font30_title</font>
+		<aligny>center</aligny>
+		<textoffsetx>22</textoffsetx>
+		<textcolor>rs_text</textcolor>
+		<focusedcolor>rs_bg</focusedcolor>
+		<disabledcolor>rs_muted</disabledcolor>
+		<texturefocus colordiffuse="rs_text">colors/white.png</texturefocus>
+		<texturenofocus colordiffuse="rs_card">colors/white.png</texturenofocus>
+	</include>
+
+	<include name="RS_ManagerSlot">
+		<param name="id" />
+		<param name="key" />
+		<param name="name" />
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>750</width>
+				<include>RS_ActionButton</include>
+				<label>$PARAM[name]</label>
+				<visible>!String.IsEmpty(Skin.String($PARAM[key].path))</visible>
+				<onclick>SetProperty(rs_slot,$PARAM[key],home)</onclick>
+				<onclick>SetFocus(301)</onclick>
+			</control>
+		</definition>
+	</include>
+
+	<include name="RS_MenuListLayouts">
+		<itemlayout width="520" height="64">
+			<control type="label">
+				<left>20</left>
+				<width>480</width>
+				<height>64</height>
+				<font>font27</font>
+				<textcolor>rs_text</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</itemlayout>
+		<focusedlayout width="520" height="64">
+			<control type="image">
+				<width>520</width>
+				<height>64</height>
+				<texture colordiffuse="rs_text">colors/white.png</texture>
+			</control>
+			<control type="label">
+				<left>20</left>
+				<width>480</width>
+				<height>64</height>
+				<font>font30_title</font>
+				<textcolor>rs_bg</textcolor>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+		</focusedlayout>
+	</include>
+
+	<include name="RS_CardBody">
+		<param name="label" />
+		<param name="show_label">true</param>
+		<definition>
+			<control type="image">
+				<left>8</left>
+				<top>8</top>
+				<width>288</width>
+				<height>162</height>
 				<texture colordiffuse="rs_card">colors/white.png</texture>
 			</control>
 			<control type="image">
-				<left>16</left>
-				<top>20</top>
-				<width>rs_card_w</width>
-				<height>rs_card_h</height>
+				<left>8</left>
+				<top>8</top>
+				<width>288</width>
+				<height>162</height>
 				<aspectratio>scale</aspectratio>
 				<texture>$VAR[RS_CardArt]</texture>
-				<visible>$EXP[rs_wide_art]</visible>
+				<visible>$EXP[rs_view_art]</visible>
 			</control>
 			<control type="image">
-				<left>16</left>
-				<top>20</top>
-				<width>rs_card_w</width>
-				<height>124</height>
+				<left>8</left>
+				<top>8</top>
+				<width>288</width>
+				<height>162</height>
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Art(poster)]</texture>
 				<visible>$EXP[rs_poster_only]</visible>
 			</control>
-			<control type="label">
-				<left>24</left>
-				<top>142</top>
-				<width>264</width>
-				<height>34</height>
-				<font>font12</font>
-				<textcolor>rs_text</textcolor>
-				<label>$INFO[ListItem.Label]</label>
-				<visible>$EXP[rs_poster_only]</visible>
-			</control>
 			<control type="image">
-				<left>108</left>
-				<top>36</top>
-				<width>96</width>
-				<height>64</height>
-				<aspectratio>keep</aspectratio>
-				<texture colordiffuse="rs_muted">DefaultVideo.png</texture>
-				<visible>$EXP[rs_no_art]</visible>
-			</control>
-			<control type="label">
-				<left>24</left>
-				<top>112</top>
-				<width>264</width>
-				<height>40</height>
-				<align>center</align>
-				<font>font12</font>
-				<textcolor>rs_text</textcolor>
-				<label>$INFO[ListItem.Label]</label>
-				<visible>$EXP[rs_no_art]</visible>
-			</control>
-			<control type="image">
-				<left>16</left>
-				<top>112</top>
-				<width>rs_card_w</width>
-				<height>60</height>
+				<left>8</left>
+				<top>78</top>
+				<width>288</width>
+				<height>92</height>
 				<texture>reelshelf/grad_v.png</texture>
-				<visible>$EXP[rs_is_episode]</visible>
+				<visible>$EXP[rs_view_art] | $EXP[rs_poster_only]</visible>
+			</control>
+			<control type="image">
+				<left>122</left>
+				<top>38</top>
+				<width>60</width>
+				<height>60</height>
+				<aspectratio>keep</aspectratio>
+				<texture fallback="DefaultVideo.png" colordiffuse="rs_muted">$INFO[ListItem.Icon]</texture>
+				<visible>!$EXP[rs_view_art] + !$EXP[rs_poster_only]</visible>
 			</control>
 			<control type="label">
-				<left>26</left>
-				<top>136</top>
+				<left>22</left>
+				<top>112</top>
 				<width>260</width>
-				<height>32</height>
-				<font>font12</font>
+				<height>49</height>
+				<aligny>bottom</aligny>
+				<font>font20_title</font>
+				<shadowcolor>black</shadowcolor>
 				<textcolor>rs_text</textcolor>
-				<label>$VAR[RS_EpCode]  $INFO[ListItem.TVShowTitle]</label>
-				<visible>$EXP[rs_is_episode]</visible>
+				<label>$PARAM[label]</label>
+				<visible>$PARAM[show_label] + String.IsEmpty(ListItem.Art(landscape))</visible>
 			</control>
 			<control type="progress">
-				<left>16</left>
-				<top>172</top>
-				<width>rs_card_w</width>
-				<height>6</height>
+				<left>8</left>
+				<top>165</top>
+				<width>288</width>
+				<height>5</height>
 				<texturebg colordiffuse="66000000">colors/white.png</texturebg>
 				<lefttexture />
 				<midtexture colordiffuse="rs_accent">colors/white.png</midtexture>
 				<righttexture />
 				<overlaytexture />
 				<info>ListItem.PercentPlayed</info>
-				<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+				<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
 			</control>
 		</definition>
 	</include>
 
-	<!-- Shelf navigation. Shelves sit in Home grouplist 9300 (hidden shelves take no space). Each shelf's Up/Down is a static
-	     RS_Nav<id> list: farthest candidate first, nearest visible last (all true actions run in order, the last SetFocus wins);
-	     SetFocus(target,$INFO[Container(src).Position]) keeps the on-screen column and Kodi clamps it on shorter shelves.
-	     Ends: Up on the first / Down on the last shelf are noop (selection stays visible).
-	     browse="never": Kodi's appended "More..." card is suppressed on every shelf (full catalogs: rail Movies / TV shows,
-	     TV Shows cards open the show). -->
-	<expression name="rs_vis5010">Integer.IsGreater(Container(5010).NumItems,0)</expression>
-	<expression name="rs_vis5020">Integer.IsGreater(Container(5020).NumItems,0)</expression>
-	<expression name="rs_vis5100">Integer.IsGreater(Container(5100).NumItems,0)</expression>
-	<expression name="rs_vis5110">Integer.IsGreater(Container(5110).NumItems,0)</expression>
-	<expression name="rs_vis5120">Integer.IsGreater(Container(5120).NumItems,0)</expression>
-	<expression name="rs_vis5130">Integer.IsGreater(Container(5130).NumItems,0)</expression>
-	<expression name="rs_vis5200">$EXP[rs_addon_ok] + [Integer.IsGreater(Container(5200).NumItems,0) | Container(5200).IsUpdating]</expression>
-	<expression name="rs_vis5210">$EXP[rs_addon_unavail]</expression>
-
-	<include name="RS_Nav5010">
-		<definition>
-			<onup>noop</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5010).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5010).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5020">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5020).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5020).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5020).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5020).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5020).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5020).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5020).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5100">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5100).Position])</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5100).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5100).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5100).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5100).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5100).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5100).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5110">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5110).Position])</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5110).Position])</onup>
-			<onup condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5110).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5110).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5110).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5110).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5110).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5120">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5120).Position])</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5120).Position])</onup>
-			<onup condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5120).Position])</onup>
-			<onup condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5120).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5120).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5120).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5120).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5130">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5130).Position])</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5130).Position])</onup>
-			<onup condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5130).Position])</onup>
-			<onup condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5130).Position])</onup>
-			<onup condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5130).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5130).Position])</ondown>
-			<ondown condition="$EXP[rs_vis5200]">SetFocus(5200,$INFO[Container(5130).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5200">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,$INFO[Container(5200).Position])</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,$INFO[Container(5200).Position])</onup>
-			<onup condition="$EXP[rs_vis5100]">SetFocus(5100,$INFO[Container(5200).Position])</onup>
-			<onup condition="$EXP[rs_vis5110]">SetFocus(5110,$INFO[Container(5200).Position])</onup>
-			<onup condition="$EXP[rs_vis5120]">SetFocus(5120,$INFO[Container(5200).Position])</onup>
-			<onup condition="$EXP[rs_vis5130]">SetFocus(5130,$INFO[Container(5200).Position])</onup>
-			<ondown>noop</ondown>
-			<ondown condition="$EXP[rs_vis5210]">SetFocus(5210,$INFO[Container(5200).Position])</ondown>
-		</definition>
-	</include>
-	<include name="RS_Nav5210">
-		<definition>
-			<onup>noop</onup>
-			<onup condition="$EXP[rs_vis5010]">SetFocus(5010,0)</onup>
-			<onup condition="$EXP[rs_vis5020]">SetFocus(5020,0)</onup>
-			<onup condition="$EXP[rs_vis5100]">SetFocus(5100,0)</onup>
-			<onup condition="$EXP[rs_vis5110]">SetFocus(5110,0)</onup>
-			<onup condition="$EXP[rs_vis5120]">SetFocus(5120,0)</onup>
-			<onup condition="$EXP[rs_vis5130]">SetFocus(5130,0)</onup>
-			<onup condition="$EXP[rs_vis5200]">SetFocus(5200,0)</onup>
-			<ondown>noop</ondown>
-		</definition>
-	</include>
-
-	<include name="RS_ColFocus">
+	<include name="RS_AddonShelf">
+		<param name="slot" />
+		<param name="key" />
 		<param name="id" />
+		<param name="group" />
+		<param name="up" />
+		<param name="down" />
 		<definition>
-			<onfocus>SetProperty(rs_shelf,$PARAM[id],home)</onfocus>
-			<onfocus>CancelAlarm(rs_settle2,silent)</onfocus>
+			<include content="RS_Shelf">
+				<param name="id" value="$PARAM[id]" />
+				<param name="group" value="$PARAM[group]" />
+				<param name="up" value="$PARAM[up]" />
+				<param name="down" value="$PARAM[down]" />
+				<param name="heading" value="$VAR[RS_ShelfName$PARAM[slot]]" />
+				<param name="label" value="$VAR[RS_ShelfLink$PARAM[id]]" />
+				<param name="path" value="$INFO[Skin.String($PARAM[key].path)]" />
+				<param name="visible" value="!String.IsEmpty(Skin.String($PARAM[key].path))" />
+				<param name="key" value="$PARAM[key]" />
+			</include>
 		</definition>
 	</include>
-
 
 	<include name="RS_Shelf">
 		<param name="id" />
+		<param name="group" />
+		<param name="up" />
+		<param name="down" />
 		<param name="heading" />
+		<param name="label">$INFO[ListItem.Label]</param>
 		<param name="path" />
-		<param name="visible" value="Integer.IsGreater(Container($PARAM[id]).NumItems,0)" />
-		<param name="onclick" value="noop" />
-		<param name="onclick_cond" value="false" />
-		<param name="onclick2" value="noop" />
-		<param name="onclick2_cond" value="false" />
+		<param name="visible" />
+		<param name="key" />
+		<param name="library">false</param>
+		<param name="resume">false</param>
 		<definition>
-			<control type="group">
-				<height>224</height>
-				<visible>[$PARAM[visible]] | $EXP[rs_unsettled]</visible>
+			<control type="group" id="$PARAM[group]">
+				<height>232</height>
+				<visible>$PARAM[visible]</visible>
 				<control type="label">
-					<left>140</left>
-					<top>0</top>
-					<width>1500</width>
-					<height>44</height>
-					<font>font32</font>
+					<left>8</left>
+					<width>1520</width>
+					<height>42</height>
+					<font>font32_title</font>
 					<textcolor>rs_text</textcolor>
 					<label>$PARAM[heading]</label>
-					<visible>$PARAM[visible]</visible>
 				</control>
-				<control type="list" id="$PARAM[id]">
-					<left>124</left>
-					<top>40</top>
-					<width>1748</width>
-					<height>200</height>
-					<orientation>horizontal</orientation>
-					<scrolltime tween="cubic" easing="out">200</scrolltime>
-					<preloaditems>2</preloaditems>
-					<onleft>9000</onleft>
-					<onright>noop</onright>
-					<include>RS_Nav$PARAM[id]</include>
-					<onback>SetFocus(9000)</onback>
-					<onclick condition="$PARAM[onclick_cond]">$PARAM[onclick]</onclick>
-					<onclick condition="$PARAM[onclick2_cond]">$PARAM[onclick2]</onclick>
-					<include content="RS_ColFocus">
-						<param name="id" value="$PARAM[id]" />
+				<include content="RS_ShelfStatus" condition="!$PARAM[library]">
+					<param name="id" value="$PARAM[id]" />
 					</include>
-					<itemlayout width="296" height="200">
-						<include>RS_CardBody</include>
+				<control type="list" id="$PARAM[id]">
+					<top>44</top>
+					<width>1752</width>
+					<height>180</height>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">160</scrolltime>
+					<preloaditems>1</preloaditems>
+					<onup>$PARAM[up]</onup>
+					<ondown>$PARAM[down]</ondown>
+					<onleft>noop</onleft>
+					<onright>noop</onright>
+					<onback>SetFocus(9000)</onback>
+					<onclick condition="$PARAM[resume] + ListItem.IsResumable">PlayMedia($ESCINFO[ListItem.FileNameAndPath],resume)</onclick>
+					<onclick condition="$PARAM[library] + !String.IsEmpty(ListItem.DBID) + ![$PARAM[resume] + ListItem.IsResumable]">Action(Info)</onclick>
+					<itemlayout width="304" height="180">
+						<include content="RS_CardBody">
+							<param name="label" value="$PARAM[label]" />
+						</include>
 					</itemlayout>
-					<focusedlayout width="296" height="200">
-						<control type="group">
-							<animation effect="zoom" start="100" end="106" center="auto" time="120" tween="sine" condition="Control.HasFocus($PARAM[id])">conditional</animation>
-							<include>RS_CardBody</include>
-							<control type="image">
-								<left>10</left>
-								<top>14</top>
-								<width>292</width>
-								<height>170</height>
-								<texture border="6">reelshelf/outline.png</texture>
-								<visible>Control.HasFocus($PARAM[id])</visible>
-							</control>
+					<focusedlayout width="656" height="180" infoupdate="250" condition="Control.HasFocus($PARAM[id])">
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>632</width>
+							<height>162</height>
+							<texture colordiffuse="rs_card">colors/white.png</texture>
+						</control>
+						<include content="RS_CardBody">
+							<param name="label" value="$PARAM[label]" />
+							<param name="show_label" value="false" />
+						</include>
+						<control type="label">
+							<left>314</left>
+							<top>16</top>
+							<width>308</width>
+							<height>38</height>
+							<font>font27</font>
+							<textcolor>rs_text</textcolor>
+							<label>$PARAM[label]</label>
+						</control>
+						<control type="label">
+							<left>314</left>
+							<top>57</top>
+							<width>308</width>
+							<height>28</height>
+							<font>font20_title</font>
+							<textcolor>rs_muted</textcolor>
+							<label>$VAR[RS_PreviewMeta]</label>
+						</control>
+						<control type="textbox">
+							<left>314</left>
+							<top>91</top>
+							<width>308</width>
+							<height>65</height>
+							<font>font20_title</font>
+							<textcolor>rs_text</textcolor>
+							<label>$INFO[ListItem.Plot]</label>
+							<visible>!String.IsEmpty(ListItem.Plot) + ![$PARAM[resume] + ListItem.IsResumable]</visible>
+						</control>
+						<control type="label">
+							<left>314</left>
+							<top>107</top>
+							<width>308</width>
+							<height>40</height>
+							<font>font27</font>
+							<textcolor>rs_text</textcolor>
+							<label>$LOCALIZE[31736]</label>
+							<visible>$PARAM[resume] + ListItem.IsResumable</visible>
+						</control>
+						<control type="image">
+							<left>2</left>
+							<top>2</top>
+							<width>644</width>
+							<height>174</height>
+							<texture border="6">reelshelf/outline.png</texture>
+						</control>
+					</focusedlayout>
+					<focusedlayout width="304" height="180" condition="!Control.HasFocus($PARAM[id])">
+						<include content="RS_CardBody">
+							<param name="label" value="$PARAM[label]" />
+						</include>
+						<control type="image">
+							<left>2</left>
+							<top>2</top>
+							<width>300</width>
+							<height>174</height>
+							<texture border="6">reelshelf/outline.png</texture>
+							<visible>Control.HasFocus($PARAM[id])</visible>
 						</control>
 					</focusedlayout>
 					<content target="videos" limit="12" browse="never">$PARAM[path]</content>
+					<include content="RS_ShelfLinks" condition="!$PARAM[library]">
+						<param name="id" value="$PARAM[id]" />
+						<param name="key" value="$PARAM[key]" />
+					</include>
 				</control>
 			</control>
+		</definition>
+	</include>
+
+	<include name="RS_ShelfStatus">
+		<param name="id" />
+		<definition>
+			<control type="label">
+				<left>1160</left>
+				<width>580</width>
+				<height>42</height>
+				<align>right</align>
+				<font>font20_title</font>
+				<textcolor>rs_muted</textcolor>
+				<label>$LOCALIZE[31719]</label>
+				<visible>Container($PARAM[id]).IsUpdating</visible>
+			</control>
+			<control type="label">
+				<left>1160</left>
+				<width>580</width>
+				<height>42</height>
+				<align>right</align>
+				<font>font20_title</font>
+				<textcolor>rs_muted</textcolor>
+				<label>$LOCALIZE[31738]</label>
+				<visible>!Container($PARAM[id]).IsUpdating + Integer.IsLess(Container($PARAM[id]).NumItems,2)</visible>
+			</control>
+		</definition>
+	</include>
+
+	<include name="RS_ShelfLinks">
+		<param name="id" />
+		<param name="key" />
+		<definition>
+			<content>
+				<item>
+					<label>$LOCALIZE[31730]</label>
+					<visible>!Container($PARAM[id]).IsUpdating</visible>
+					<icon>icons/sidemenu/addons.png</icon>
+					<property name="rs_shelf_action">true</property>
+					<onclick condition="Integer.IsGreater(Container($PARAM[id]).NumItems,1)">ActivateWindow(Videos,$ESCINFO[Skin.String($PARAM[key].path)],return)</onclick>
+					<onclick condition="!Container($PARAM[id]).IsUpdating + Integer.IsLess(Container($PARAM[id]).NumItems,2)">SetProperty(rs_slot,$PARAM[key],home)</onclick>
+					<onclick condition="!Container($PARAM[id]).IsUpdating + Integer.IsLess(Container($PARAM[id]).NumItems,2)">ActivateWindow(1191)</onclick>
+				</item>
+			</content>
 		</definition>
 	</include>
 </includes>

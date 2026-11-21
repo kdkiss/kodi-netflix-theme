@@ -8,7 +8,7 @@ BASE = sys.argv[0]
 
 def media_root():
     # ponytail: walk up from the installed copy to find tests/media; fine for the harness layout only
-    for p in Path(__file__).resolve().parents:
+    for p in Path(__file__).absolute().parents:
         if (p / "tests" / "media").is_dir():
             return p / "tests" / "media"
     return Path("tests/media")
@@ -49,6 +49,7 @@ def main():
     if page is None:
         folder("Featured", page="featured")
         folder("Browse", page="browse")
+        folder("Calendar (Today, 0)", page="calendar")
     elif page == "featured":
         for i, d in enumerate(m[:4]):
             playable(d.name, d.name, art(d), resume=(30.0, 70.0) if i == 1 else None, plot="Featured item %d." % i)

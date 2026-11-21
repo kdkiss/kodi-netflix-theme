@@ -1,6 +1,6 @@
 # Reel Shelf
 
-A Kodi skin for the Fire TV Stick remote: a large backdrop on top, horizontal shelves below (Continue Watching, Recently Added, Movies, TV shows, plus one add-on folder you choose), a narrow left rail, and a bright outline on the selected card. Interaction is inspired by streaming apps. It is built on Kodi's Estuary skin and works with Kodi's own library and installed video add-ons.
+A Kodi skin for the Fire TV Stick remote, built on Estuary. Home shows up to eight shelves from folders you choose in your video add-ons. The selected card expands to show its artwork and available title information. If Kodi has a local library, its shelves appear below your custom shelves.
 
 ## Tested
 
@@ -9,7 +9,7 @@ A Kodi skin for the Fire TV Stick remote: a large backdrop on top, horizontal sh
 
 ## Build and test
 
-    python tools/build.py        # writes dist/skin.reelshelf-<version>.zip
+    python tools/build.py        # builds the ZIP and updates the GitHub Pages download in docs/
     python tools/test_build.py   # checks the ZIP (layout, XML, includes, hash)
 
 The ZIP contains only `skin.reelshelf/`.
@@ -19,20 +19,24 @@ The ZIP contains only `skin.reelshelf/`.
 1. Kodi: Settings > System > Add-ons > turn on **Unknown sources**. Kodi warns that add-ons get access to personal data; accept it. If it is off, **Install from zip file** shows "For security, installation of add-ons from unknown sources is disabled." with a **Settings** button that opens this page.
 2. Get the ZIP onto the device, either:
    - **From your PC over HTTP (Fire Stick):** run `python tools/serve.py 8000` on the PC (plain `python -m http.server` does not support the range requests Kodi uses on ZIPs and crashed Kodi 21.3 in testing). In Kodi: Settings > File manager > Add source > enter `http://<PC-IP>:8000/` > name it > OK.
-   - **From GitHub Pages:** `tools/build.py` also copies the ZIP and a link page into `docs/`. With Pages serving `main` / `docs`, add `https://<user>.github.io/<repo>/` as the source instead.
+   - **From GitHub Pages:** In Kodi's File manager, add the [Reel Shelf download page](https://kdkiss.github.io/kodi-netflix-theme/) as a source.
    - Or a local folder, an SMB share, or the Downloader app.
 3. Add-ons > **Install from zip file** > pick the source > `skin.reelshelf-<version>.zip`.
 4. Answer Yes to "Would you like to switch to this skin?" and **Keep** the change.
 
-## Choose, rename and clear the add-on shelf
+## Update an existing installation
 
-Home > Choose a shelf (shown on an empty Home), or Settings > Interface > Skin > Configure skin... > **Reel Shelf**:
+Open **Add-ons > Install from zip file**, select your existing Reel Shelf source, and choose the newer ZIP. With the same add-on ID, Kodi installs it over the current version and keeps the saved shelf settings. Check **Settings > Interface > Skin > Configure skin > Reel Shelf** if you want to manage the shelves after updating.
 
-- **Choose add-on shelf**: pick a video add-on, open its folders with Select, press **Use this folder**.
-- **Rename shelf**: edit the heading.
-- **Clear add-on shelf**: remove it.
+## Add and manage shelves
 
-The shelf shows up to 12 items. If the add-on is missing or the folder is empty the shelf says "Unavailable or empty" and offers "Choose again".
+1. On Home, open **Shelves** and select **Add shelf**. On an empty Home, you can open **Add shelf** directly.
+2. Select an installed video add-on and open the folder you want. Press **Right** and select **Use this folder**. Repeat for each folder. For example, you can pin separate Movies, Most Watched TV, and Trakt Calendar folders if your add-on exposes them in its folder browser.
+3. To rename a shelf, change its folder, browse the full folder, or remove it, select its name in **Shelves**. The manager is also under **Settings > Interface > Skin > Configure skin > Reel Shelf**.
+
+Upgrading from 1.0 keeps the original shelf in the first slot. Each shelf previews up to 12 items, in the order the add-on provides, followed by a shortcut to the full folder. A temporarily empty shelf keeps its place on Home and can be managed from its card. Selecting a title or folder follows the add-on's normal Kodi behavior.
+
+Press **Back** on a shelf to reach the top menu. Press **Down** to return to the last shelf. Local Movies and TV shows shortcuts appear under **More** when those libraries contain titles. Local Continue Watching cards resume from the saved position when selected. The title overview puts playback first, with the next unwatched episode beside the season and episode browser for local series.
 
 ## Go back to Estuary
 

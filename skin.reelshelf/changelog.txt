@@ -1,3 +1,9 @@
+[B]1.1.0[/B]
+• Add and manage up to eight video add-on shelves, including the shelf carried over from 1.0.
+• Prioritize custom shelves on Home and show library shortcuts only when applicable.
+• Expand the focused card with title information and add an artwork-led title overview.
+• Resume local Continue Watching items directly from Home and play the next unwatched episode from a series overview.
+
 [B]0.8.5[/B]
 • Updated language files from Transifex
 

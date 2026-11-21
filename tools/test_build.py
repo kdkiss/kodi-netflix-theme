@@ -23,4 +23,25 @@ for n in names:
     if n.endswith("strings.po"):
         head = z.read(n).decode("utf-8")[:300]
         assert "skin.estuary" not in head and "Addon Name: Estuary" not in head, n
+home = ET.fromstring(z.read("skin.reelshelf/xml/Home.xml"))
+shelves = [
+    {param.get("name"): param.get("value") for param in node.findall("param")}
+    for node in home.iter("include")
+    if node.get("content") in {"RS_AddonShelf", "RS_Shelf"}
+]
+control_ids = [node.get("id") for node in home.iter("control") if node.get("id")]
+control_ids.extend(shelf[name] for shelf in shelves for name in ("id", "group"))
+assert len(control_ids) == len(set(control_ids)), "Home shelf and group control IDs must not overlap"
+
+manager = ET.fromstring(z.read("skin.reelshelf/xml/Custom_1191_RSShelves.xml"))
+managed_keys = [
+    node.find("param[@name='key']").get("value")
+    for node in manager.iter("include")
+    if node.get("content") == "RS_ManagerSlot"
+]
+home_keys = [shelf["key"] for shelf in shelves if "key" in shelf]
+assert home_keys == managed_keys == ["rs.addon"] + [f"rs.addon{i}" for i in range(2, 9)], (
+    "Home and the manager must share eight independent slots, starting with the 1.0 setting"
+)
+
 print("ok", h1)

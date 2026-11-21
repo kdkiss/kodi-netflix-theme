@@ -1,3 +1,18 @@
+# Reel Shelf 1.1 testing
+
+Verified on portable Kodi 21.3 Omega using the local test video add-on and synthetic media. The 1.0 release results follow below.
+
+- With an empty library, Add shelf opens the picker and returns focus to the first saved shelf.
+- A shelf saved with the 1.0 settings opens under its original name. Two more folders from the same add-on can be added independently, including an empty calendar with a comma in its name.
+- Renaming, changing a folder, removing a shelf, and restarting Kodi preserve the other shelves. Changing the folder keeps the shelf name.
+- A folder with 20 entries shows 12 on Home plus the full-folder shortcut. Back and Down restore the selected Home card, and selecting a playable add-on item starts its video.
+- With all eight slots populated, remote navigation reached the eighth shelf. Back then Down returned to it, and ten Right presses followed by ten Left presses restored the first card.
+- The playback overview opens the secondary details and starts a local movie. Continue Watching resumed that movie about eight seconds in with a single Select press.
+- For a two-season show with episode 1 marked watched, Next episode displayed and played S01E02. Episodes opened the normal season browser.
+- Fire TV and a signed-in POV/Trakt account remain to be tested.
+
+---
+
 # Reel Shelf testing
 
 Release artifact: `dist/skin.reelshelf-1.0.0.zip`, 4,107,130 bytes, SHA-256 `6719cef3759aa7da2b36605711729af55613ee9aee5d0c2c16616161ef795551`.

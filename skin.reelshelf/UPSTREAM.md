@@ -28,3 +28,9 @@ Licenses and credits kept: `LICENSE.txt`, `fonts/*license*`, `extras/home-images
 - `xml/Timers.xml` (upstream timers kept, three added): `rs_empty_focus` focuses the empty-state actions only when nothing has focus; `rs_settle_fast` ends the Home settle window as soon as a library shelf has items (3 s alarm in Home.xml stays as fallback); `rs_relayout` re-focuses the focused shelf when the settle window ends (a cold start on an add-on-only Home was blank until a key press).
 - `xml/Home.xml`: the unconditional `SetFocus(9400)` alarm is removed.
 - `addon.xml` 1.0.0.
+
+## Changes from upstream (1.1.0)
+
+- Home lists up to eight video add-on folders ahead of local-library shelves. The first slot keeps the 1.0 settings. Custom_1191_RSShelves.xml manages the slots and Custom_1190_RSPicker.xml browses the selected source.
+- Includes_ReelShelf.xml provides the wide focused card and the title overview. DialogVideoInfo.xml keeps Kodi's playback, episode browsing, and maintenance actions and adds a first-unwatched-episode link for local series.
+- Timers.xml recovers focus after an empty picker result or a first-shelf setup.

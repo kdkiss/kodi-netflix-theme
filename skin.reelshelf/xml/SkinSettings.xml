@@ -283,26 +283,10 @@
 				<ondown>630</ondown>
 				<visible>Container(9000).HasFocus(5)</visible>
 				<control type="button" id="631">
-					<label>$LOCALIZE[31713]</label>
-					<label2>$VAR[RS_AddonLabelSetting]</label2>
+					<label>$LOCALIZE[31729]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>ActivateWindow(1190)</onclick>
-				</control>
-				<control type="button" id="632">
-					<label>$LOCALIZE[31714]</label>
-					<label2></label2>
-					<include>DefaultSettingButton</include>
-					<onclick>Skin.SetString(rs.addon.label)</onclick>
-					<enable>!String.IsEmpty(Skin.String(rs.addon.path))</enable>
-				</control>
-				<control type="button" id="633">
-					<label>$LOCALIZE[31716]</label>
-					<label2></label2>
-					<include>DefaultSettingButton</include>
-					<onclick>Skin.Reset(rs.addon.path)</onclick>
-					<onclick>Skin.Reset(rs.addon.id)</onclick>
-					<onclick>Skin.Reset(rs.addon.label)</onclick>
-					<enable>!String.IsEmpty(Skin.String(rs.addon.path))</enable>
+					<onclick>ClearProperty(rs_slot,home)</onclick>
+					<onclick>ActivateWindow(1191)</onclick>
 				</control>
 			</control>
 			<control type="grouplist" id="622">

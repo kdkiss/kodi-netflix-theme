@@ -1046,3 +1046,59 @@ msgstr ""
 msgctxt "#31725"
 msgid "Cancel"
 msgstr ""
+
+msgctxt "#31726"
+msgid "Build your home screen"
+msgstr ""
+
+msgctxt "#31727"
+msgid "Choose a folder from a video add-on to add your first shelf."
+msgstr ""
+
+msgctxt "#31728"
+msgid "Add shelf"
+msgstr ""
+
+msgctxt "#31729"
+msgid "Manage shelves"
+msgstr ""
+
+msgctxt "#31730"
+msgid "Browse full shelf"
+msgstr ""
+
+msgctxt "#31731"
+msgid "Add up to eight shelves from any installed video add-on."
+msgstr ""
+
+msgctxt "#31732"
+msgid "Change folder"
+msgstr ""
+
+msgctxt "#31733"
+msgid "Remove shelf"
+msgstr ""
+
+msgctxt "#31734"
+msgid "More details"
+msgstr ""
+
+msgctxt "#31735"
+msgid "Overview"
+msgstr ""
+
+msgctxt "#31736"
+msgid "Resume"
+msgstr ""
+
+msgctxt "#31737"
+msgid "Shelves"
+msgstr ""
+
+msgctxt "#31738"
+msgid "Empty or unavailable"
+msgstr ""
+
+msgctxt "#31739"
+msgid "Next episode"
+msgstr ""
