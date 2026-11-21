@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">9300</defaultcontrol>
+	<backgroundcolor>rs_bg</backgroundcolor>
+	<onload>ClearProperty(rs_settled,home)</onload>
+	<onload>ClearProperty(rs_more,home)</onload>
+	<onload>AlarmClock(rs_settle,"SetProperty(rs_settled,1,home)",00:03,silent)</onload>
+	<onunload>CancelAlarm(rs_settle,silent)</onunload>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>100%</height>
+			<texture colordiffuse="rs_bg">colors/white.png</texture>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<!-- Shelves first, hero on top. The vertical grouplist skips hidden shelves; Up at the first / Down at the last stay put.
+			     To add a shelf: one RS_Shelf include here + its id in Includes_ReelShelf.xml (rs_empty, RS_Hero*). -->
+			<control type="grouplist" id="9300">
+				<left>0</left>
+				<top>620</top>
+				<width>1920</width>
+				<height>460</height>
+				<orientation>vertical</orientation>
+				<itemgap>0</itemgap>
+				<onleft>9000</onleft>
+				<include content="RS_Shelf">
+					<param name="id" value="5010" />
+					<param name="visible" value="Integer.IsGreater(Container(5010).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[31706]" />
+					<param name="path" value="special://skin/playlists/rs_inprogress_movies.xsp" />
+					<param name="onclick" value="Action(Info)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<include content="RS_Shelf">
+					<param name="id" value="5020" />
+					<param name="visible" value="Integer.IsGreater(Container(5020).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[31707]" />
+					<param name="path" value="special://skin/playlists/rs_inprogress_episodes.xsp" />
+					<param name="onclick" value="Action(Info)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<include content="RS_Shelf">
+					<param name="id" value="5100" />
+					<param name="visible" value="Integer.IsGreater(Container(5100).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[31700]" />
+					<param name="path" value="videodb://recentlyaddedmovies/" />
+					<param name="onclick" value="Action(Info)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<include content="RS_Shelf">
+					<param name="id" value="5110" />
+					<param name="visible" value="Integer.IsGreater(Container(5110).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[31708]" />
+					<param name="path" value="videodb://recentlyaddedepisodes/" />
+					<param name="onclick" value="Action(Info)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<include content="RS_Shelf">
+					<param name="id" value="5120" />
+					<param name="visible" value="Integer.IsGreater(Container(5120).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[342]" />
+					<param name="path" value="videodb://movies/titles/" />
+					<param name="onclick" value="Action(Info)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<include content="RS_Shelf">
+					<param name="id" value="5130" />
+					<param name="visible" value="Integer.IsGreater(Container(5130).NumItems,0)" />
+					<param name="heading" value="$LOCALIZE[20343]" />
+					<param name="path" value="videodb://tvshows/titles/" />
+					<param name="onclick" value="ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)" />
+					<param name="onclick_cond" value="!String.IsEmpty(ListItem.DBID)" />
+				</include>
+				<!-- Add-on shelf: one user-picked plugin:// folder (picker: window 1190). Visible while loading or populated. -->
+				<include content="RS_Shelf">
+					<param name="id" value="5200" />
+					<param name="heading" value="$VAR[RS_AddonLabel]" />
+					<param name="path" value="$INFO[Skin.String(rs.addon.path)]" />
+					<param name="visible" value="$EXP[rs_addon_ok] + [Integer.IsGreater(Container(5200).NumItems,0) | Container(5200).IsUpdating]" />
+					<param name="onclick" value="ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)" />
+					<param name="onclick_cond" value="ListItem.IsFolder" />
+					<param name="onclick2" value="PlayMedia($INFO[ListItem.FileNameAndPath])" />
+					<param name="onclick2_cond" value="!ListItem.IsFolder" />
+				</include>
+				<!-- Add-on shelf unavailable (add-on missing/disabled, folder gone or empty) -->
+				<control type="group">
+					<height>224</height>
+					<visible>$EXP[rs_addon_unavail]</visible>
+					<control type="label">
+						<left>140</left>
+						<width>1500</width>
+						<height>44</height>
+						<font>font32</font>
+						<textcolor>rs_text</textcolor>
+						<label>$VAR[RS_AddonLabel]</label>
+					</control>
+					<control type="label">
+						<left>140</left>
+						<top>60</top>
+						<width>1500</width>
+						<height>40</height>
+						<font>font27</font>
+						<textcolor>rs_muted</textcolor>
+						<label>$LOCALIZE[31720]</label>
+					</control>
+					<control type="button" id="5210">
+						<left>140</left>
+						<top>120</top>
+						<width>420</width>
+						<height>70</height>
+						<font>font27</font>
+						<textcolor>rs_text</textcolor>
+						<focusedcolor>rs_text</focusedcolor>
+						<aligny>center</aligny>
+						<textoffsetx>24</textoffsetx>
+						<label>$LOCALIZE[31724]</label>
+						<texturefocus colordiffuse="rs_accent">colors/white.png</texturefocus>
+						<texturenofocus colordiffuse="rs_card">colors/white.png</texturenofocus>
+						<onleft>9000</onleft>
+						<onback>SetFocus(9000)</onback>
+						<onclick>ActivateWindow(1190)</onclick>
+						<include>RS_Nav5210</include>
+						<onfocus>SetProperty(rs_shelf,0,home)</onfocus>
+					</control>
+				</control>
+			</control>
+			<!-- Empty-state browse actions -->
+			<control type="list" id="9400">
+				<left>124</left>
+				<top>640</top>
+				<width>1748</width>
+				<height>200</height>
+				<orientation>horizontal</orientation>
+				<visible>$EXP[rs_empty]</visible>
+				<onleft>9000</onleft>
+				<onright>noop</onright>
+				<onup>noop</onup>
+				<ondown>noop</ondown>
+				<onback>SetFocus(9000)</onback>
+				<itemlayout width="420" height="200">
+					<control type="image">
+						<left>16</left>
+						<top>20</top>
+						<width>400</width>
+						<height>160</height>
+						<texture colordiffuse="rs_card">colors/white.png</texture>
+					</control>
+					<control type="label">
+						<left>16</left>
+						<top>20</top>
+						<width>400</width>
+						<height>160</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>rs_text</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="420" height="200">
+					<control type="image">
+						<left>16</left>
+						<top>20</top>
+						<width>400</width>
+						<height>160</height>
+						<texture colordiffuse="rs_card">colors/white.png</texture>
+					</control>
+					<control type="label">
+						<left>16</left>
+						<top>20</top>
+						<width>400</width>
+						<height>160</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>rs_text</textcolor>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>14</top>
+						<width>412</width>
+						<height>172</height>
+						<texture border="6">reelshelf/outline.png</texture>
+						<visible>Control.HasFocus(9400)</visible>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>$LOCALIZE[31710]</label>
+						<onclick>ActivateWindow(Videos,addons://sources/video/,return)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31711]</label>
+						<onclick>ActivateWindow(1190)</onclick>
+					</item>
+					<item>
+						<label>$LOCALIZE[31712]</label>
+						<onclick>ActivateWindow(Videos,sources://video/,return)</onclick>
+					</item>
+				</content>
+			</control>
+			<!-- Hero: no focusable controls -->
+			<include>RS_Hero</include>
+		</control>
+		<!-- Rail -->
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>100</width>
+				<height>1080</height>
+				<texture colordiffuse="CC111214">colors/white.png</texture>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>380</width>
+				<height>1080</height>
+				<texture colordiffuse="FF111214">colors/white.png</texture>
+				<visible>ControlGroup(9500).HasFocus</visible>
+			</control>
+			<control type="group" id="9500">
+				<control type="list" id="9000">
+					<left>0</left>
+					<top>200</top>
+					<width>380</width>
+					<height>700</height>
+					<orientation>vertical</orientation>
+					<onup>noop</onup>
+					<ondown>noop</ondown>
+					<onleft>noop</onleft>
+					<onright condition="$EXP[rs_empty]">9400</onright>
+					<onright>9300</onright>
+					<onfocus>ClearProperty(rs_more,home)</onfocus>
+					<itemlayout width="380" height="90">
+						<control type="image">
+							<left>25</left>
+							<top>20</top>
+							<width>50</width>
+							<height>50</height>
+							<aspectratio>keep</aspectratio>
+							<texture colordiffuse="rs_muted">$INFO[ListItem.Icon]</texture>
+						</control>
+						<control type="label">
+							<left>110</left>
+							<width>250</width>
+							<height>90</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>rs_muted</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>ControlGroup(9500).HasFocus</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout width="380" height="90">
+						<control type="image">
+							<width>380</width>
+							<height>90</height>
+							<texture colordiffuse="rs_accent">colors/white.png</texture>
+							<visible>Control.HasFocus(9000)</visible>
+						</control>
+						<control type="image">
+							<left>25</left>
+							<top>20</top>
+							<width>50</width>
+							<height>50</height>
+							<aspectratio>keep</aspectratio>
+							<texture colordiffuse="rs_text">$INFO[ListItem.Icon]</texture>
+						</control>
+						<control type="label">
+							<left>110</left>
+							<width>250</width>
+							<height>90</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>rs_text</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>ControlGroup(9500).HasFocus</visible>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>$LOCALIZE[31702]</label>
+							<icon>icons/sidemenu/videos.png</icon>
+							<onclick condition="$EXP[rs_empty]">SetFocus(9400)</onclick>
+							<onclick>SetFocus(9300)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[342]</label>
+							<icon>icons/sidemenu/movies.png</icon>
+							<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[20343]</label>
+							<icon>icons/sidemenu/tv.png</icon>
+							<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[31704]</label>
+							<icon>icons/sidemenu/addons.png</icon>
+							<onclick>ActivateWindow(Videos,addons://sources/video/,return)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[10134]</label>
+							<icon>icons/sidemenu/favourites.png</icon>
+							<onclick>ActivateWindow(favouritesbrowser)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[10004]</label>
+							<icon>icons/settings.png</icon>
+							<onclick>ActivateWindow(settings)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[31703]</label>
+							<icon>icons/sidemenu/manage.png</icon>
+							<onclick>SetProperty(rs_more,1,home)</onclick>
+							<onclick>SetFocus(9100)</onclick>
+						</item>
+					</content>
+				</control>
+				<!-- More: Estuary's other routes, upstream actions -->
+				<control type="list" id="9100">
+					<left>400</left>
+					<top>200</top>
+					<width>520</width>
+					<height>810</height>
+					<orientation>vertical</orientation>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<onback>SetFocus(9000)</onback>
+					<visible>String.IsEqual(Window(home).Property(rs_more),1)</visible>
+					<itemlayout width="520" height="80">
+						<control type="label">
+							<left>30</left>
+							<width>470</width>
+							<height>80</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>rs_muted</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout width="520" height="80">
+						<control type="image">
+							<width>520</width>
+							<height>80</height>
+							<texture colordiffuse="rs_accent">colors/white.png</texture>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<width>470</width>
+							<height>80</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textcolor>rs_text</textcolor>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>$LOCALIZE[2]</label>
+							<onclick>ActivateWindow(Music,root,return)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[1]</label>
+							<onclick>ActivateWindow(Pictures)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[19020]</label>
+							<onclick>ActivateWindow(TVChannels)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[19021]</label>
+							<onclick>ActivateWindow(RadioChannels)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[15016]</label>
+							<onclick>ActivateWindow(Games)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[24001]</label>
+							<onclick>ActivateWindow(1100)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[8]</label>
+							<onclick condition="!String.IsEmpty(Weather.Plugin)">ActivateWindow(Weather)</onclick>
+							<onclick condition="String.IsEmpty(Weather.Plugin)">ReplaceWindow(servicesettings,weather)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[7]</label>
+							<onclick>ActivateWindow(filemanager)</onclick>
+						</item>
+						<item>
+							<label>$LOCALIZE[33060]</label>
+							<onclick>ActivateWindow(shutdownmenu)</onclick>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,9 @@
+# Portable Kodi test install and profile (200+ MB)
+.kodi/
+# Generated test media and screenshots
+tests/media/
+tests/out/
+# Build output; the published copy lives in docs/
+dist/
+__pycache__/
+*.pyc

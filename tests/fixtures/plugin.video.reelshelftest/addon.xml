@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.reelshelftest" name="Reel Shelf Test Source" version="1.0.0" provider-name="reelshelf">
+  <requires><import addon="xbmc.python" version="3.0.0"/></requires>
+  <extension point="xbmc.python.pluginsource" library="main.py"><provides>video</provides></extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Test-only video source</summary>
+    <description lang="en_GB">Test fixture for Reel Shelf. Never shipped.</description>
+    <platform>all</platform>
+  </extension>
+</addon>

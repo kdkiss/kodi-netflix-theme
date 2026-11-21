@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Add-on shelf chooser. Lists addons://sources/video/ at the root, then the picked plugin:// folder.
+     Back stack = Window properties rs_p0..rs_p7 (paths) / rs_l0..rs_l7 (labels), depth rs_d; rs_pick/rs_label = current folder. -->
+<window id="1190">
+	<defaultcontrol always="true">100</defaultcontrol>
+	<backgroundcolor>rs_bg</backgroundcolor>
+	<onload>ClearProperty(rs_pick)</onload>
+	<onload>ClearProperty(rs_label)</onload>
+	<onload>ClearProperty(rs_id)</onload>
+	<onload>SetProperty(rs_d,0)</onload>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>100%</width>
+			<height>100%</height>
+			<texture colordiffuse="F0111214">colors/white.png</texture>
+		</control>
+		<control type="label">
+			<left>140</left>
+			<top>60</top>
+			<width>1600</width>
+			<height>70</height>
+			<font>font64</font>
+			<textcolor>rs_text</textcolor>
+			<label>$LOCALIZE[31723]</label>
+		</control>
+		<control type="label">
+			<left>140</left>
+			<top>150</top>
+			<width>1600</width>
+			<height>40</height>
+			<font>font27</font>
+			<textcolor>rs_muted</textcolor>
+			<label>$VAR[RS_PickCrumb]</label>
+		</control>
+		<control type="label">
+			<left>140</left>
+			<top>250</top>
+			<width>1100</width>
+			<height>40</height>
+			<font>font27</font>
+			<textcolor>rs_muted</textcolor>
+			<label>$LOCALIZE[31719]</label>
+			<visible>Container(100).IsUpdating</visible>
+		</control>
+		<control type="list" id="100">
+			<left>140</left>
+			<top>240</top>
+			<width>1200</width>
+			<height>760</height>
+			<orientation>vertical</orientation>
+			<onleft>noop</onleft>
+			<onright>200</onright>
+			<onup>noop</onup>
+			<ondown>noop</ondown>
+			<onback condition="String.IsEmpty(Window.Property(rs_d)) | String.IsEqual(Window.Property(rs_d),0)">Action(PreviousMenu)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_pick,$INFO[Window.Property(rs_p0)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_label,$INFO[Window.Property(rs_l0)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_d,0)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_pick,$INFO[Window.Property(rs_p1)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_label,$INFO[Window.Property(rs_l1)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_d,1)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_pick,$INFO[Window.Property(rs_p2)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_label,$INFO[Window.Property(rs_l2)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_d,2)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_pick,$INFO[Window.Property(rs_p3)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_label,$INFO[Window.Property(rs_l3)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_d,3)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_pick,$INFO[Window.Property(rs_p4)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_label,$INFO[Window.Property(rs_l4)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_d,4)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_pick,$INFO[Window.Property(rs_p5)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_label,$INFO[Window.Property(rs_l5)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_d,5)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_pick,$INFO[Window.Property(rs_p6)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_label,$INFO[Window.Property(rs_l6)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_d,6)</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_pick,$INFO[Window.Property(rs_p7)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_label,$INFO[Window.Property(rs_l7)])</onback>
+			<onback condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_d,7)</onback>
+			<onclick condition="!ListItem.IsFolder">noop</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEmpty(Window.Property(rs_pick))">SetProperty(rs_id,$INFO[ListItem.Property(Addon.ID)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_p7,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_l7,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_d,8)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_p6,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_l6,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_d,7)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_p5,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_l5,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_d,6)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_p4,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_l4,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_d,5)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_p3,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_l3,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_d,4)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_p2,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_l2,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_d,3)</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_p1,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_l1,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_d,2)</onclick>
+			<onclick condition="ListItem.IsFolder + [String.IsEmpty(Window.Property(rs_d)) | String.IsEqual(Window.Property(rs_d),0)]">SetProperty(rs_p0,$INFO[Window.Property(rs_pick)])</onclick>
+			<onclick condition="ListItem.IsFolder + [String.IsEmpty(Window.Property(rs_d)) | String.IsEqual(Window.Property(rs_d),0)]">SetProperty(rs_l0,$INFO[Window.Property(rs_label)])</onclick>
+			<onclick condition="ListItem.IsFolder + [String.IsEmpty(Window.Property(rs_d)) | String.IsEqual(Window.Property(rs_d),0)]">SetProperty(rs_d,1)</onclick>
+			<onclick condition="ListItem.IsFolder">SetProperty(rs_label,$INFO[ListItem.Label])</onclick>
+			<onclick condition="ListItem.IsFolder">SetProperty(rs_pick,$INFO[ListItem.FolderPath])</onclick>
+			<itemlayout width="1200" height="80">
+				<control type="image">
+					<left>10</left>
+					<top>14</top>
+					<width>52</width>
+					<height>52</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="rs_muted">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<width>1090</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>rs_muted</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="1200" height="80">
+				<control type="image">
+					<width>1200</width>
+					<height>80</height>
+					<texture colordiffuse="rs_accent">colors/white.png</texture>
+					<visible>Control.HasFocus(100)</visible>
+				</control>
+				<control type="image">
+					<left>10</left>
+					<top>14</top>
+					<width>52</width>
+					<height>52</height>
+					<aspectratio>keep</aspectratio>
+					<texture colordiffuse="rs_text">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<left>90</left>
+					<width>1090</width>
+					<height>80</height>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>rs_text</textcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+			<content target="videos">$VAR[RS_PickPath]</content>
+		</control>
+		<control type="grouplist" id="150">
+			<left>1420</left>
+			<top>240</top>
+			<width>420</width>
+			<height>600</height>
+			<orientation>vertical</orientation>
+			<itemgap>20</itemgap>
+			<onleft>100</onleft>
+			<onback>100</onback>
+			<control type="button" id="200">
+				<width>420</width>
+				<height>80</height>
+				<font>font13</font>
+				<aligny>center</aligny>
+				<textoffsetx>24</textoffsetx>
+				<textcolor>rs_text</textcolor>
+				<focusedcolor>rs_text</focusedcolor>
+				<disabledcolor>66F5F5F5</disabledcolor>
+				<texturefocus colordiffuse="rs_accent">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="rs_card">colors/white.png</texturenofocus>
+				<label>$LOCALIZE[31717]</label>
+				<enable>!String.IsEmpty(Window.Property(rs_pick)) + !String.IsEmpty(Window.Property(rs_id))</enable>
+				<onclick>Skin.SetString(rs.addon.path,$INFO[Window.Property(rs_pick)])</onclick>
+				<onclick>Skin.SetString(rs.addon.id,$INFO[Window.Property(rs_id)])</onclick>
+				<onclick>Skin.SetString(rs.addon.label,$INFO[Window.Property(rs_label)])</onclick>
+				<onclick>Action(PreviousMenu)</onclick>
+			</control>
+			<control type="button" id="201">
+				<width>420</width>
+				<height>80</height>
+				<font>font13</font>
+				<aligny>center</aligny>
+				<textoffsetx>24</textoffsetx>
+				<textcolor>rs_text</textcolor>
+				<focusedcolor>rs_text</focusedcolor>
+				<disabledcolor>66F5F5F5</disabledcolor>
+				<texturefocus colordiffuse="rs_accent">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="rs_card">colors/white.png</texturenofocus>
+				<label>$LOCALIZE[31718]</label>
+				<enable>!String.IsEmpty(Window.Property(rs_d)) + !String.IsEqual(Window.Property(rs_d),0)</enable>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_pick,$INFO[Window.Property(rs_p0)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_label,$INFO[Window.Property(rs_l0)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),1)">SetProperty(rs_d,0)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_pick,$INFO[Window.Property(rs_p1)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_label,$INFO[Window.Property(rs_l1)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),2)">SetProperty(rs_d,1)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_pick,$INFO[Window.Property(rs_p2)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_label,$INFO[Window.Property(rs_l2)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),3)">SetProperty(rs_d,2)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_pick,$INFO[Window.Property(rs_p3)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_label,$INFO[Window.Property(rs_l3)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),4)">SetProperty(rs_d,3)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_pick,$INFO[Window.Property(rs_p4)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_label,$INFO[Window.Property(rs_l4)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),5)">SetProperty(rs_d,4)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_pick,$INFO[Window.Property(rs_p5)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_label,$INFO[Window.Property(rs_l5)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),6)">SetProperty(rs_d,5)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_pick,$INFO[Window.Property(rs_p6)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_label,$INFO[Window.Property(rs_l6)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),7)">SetProperty(rs_d,6)</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_pick,$INFO[Window.Property(rs_p7)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_label,$INFO[Window.Property(rs_l7)])</onclick>
+				<onclick condition="String.IsEqual(Window.Property(rs_d),8)">SetProperty(rs_d,7)</onclick>
+			</control>
+			<control type="button" id="202">
+				<width>420</width>
+				<height>80</height>
+				<font>font13</font>
+				<aligny>center</aligny>
+				<textoffsetx>24</textoffsetx>
+				<textcolor>rs_text</textcolor>
+				<focusedcolor>rs_text</focusedcolor>
+				<disabledcolor>66F5F5F5</disabledcolor>
+				<texturefocus colordiffuse="rs_accent">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="rs_card">colors/white.png</texturenofocus>
+				<label>$LOCALIZE[31725]</label>
+				<onclick>Action(PreviousMenu)</onclick>
+			</control>
+		</control>
+	</controls>
+</window>
