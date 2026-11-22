@@ -4,7 +4,7 @@
 	<backgroundcolor>rs_bg</backgroundcolor>
 	<onload>ClearProperty(rs_more,home)</onload>
 	<onload>ClearProperty(rs_settled,home)</onload>
-	<onload>AlarmClock(rs_settle,"SetProperty(rs_settled,1,home)",00:01,silent)</onload>
+	<onload>AlarmClock(rs_settle,"SetProperty(rs_settled,1,home)",00:04,silent)</onload>
 	<onunload>CancelAlarm(rs_settle,silent)</onunload>
 	<controls>
 		<control type="grouplist" id="9300">
@@ -17,6 +17,7 @@
 			<scrolltime tween="cubic" easing="out">180</scrolltime>
 			<onup>9000</onup>
 			<ondown>noop</ondown>
+			<animation effect="fade" start="100" end="0" time="1" condition="$EXP[rs_unsettled] + [Library.HasContent(Movies) | Library.HasContent(TVShows)]">Conditional</animation>
 			<include content="RS_AddonShelf">
 				<param name="id" value="5200" />
 				<param name="group" value="5600" />

@@ -34,3 +34,12 @@ Licenses and credits kept: `LICENSE.txt`, `fonts/*license*`, `extras/home-images
 - Home lists up to eight video add-on folders ahead of local-library shelves. The first slot keeps the 1.0 settings. Custom_1191_RSShelves.xml manages the slots and Custom_1190_RSPicker.xml browses the selected source.
 - Includes_ReelShelf.xml provides the wide focused card and the title overview. DialogVideoInfo.xml keeps Kodi's playback, episode browsing, and maintenance actions and adds a first-unwatched-episode link for local series.
 - Timers.xml recovers focus after an empty picker result or a first-shelf setup.
+
+## Changes from upstream (1.1.1)
+
+- `Home.xml`: the shelf list is faded out while the settle window is open and a library exists, so empty library shelves never show headings or gaps; settle alarm is 4 s.
+- `Timers.xml`: `rs_settle_fast` (ends the settle window once no library shelf is updating and one has items) and `rs_relayout` (re-focuses the focused shelf when the window ends) restored, now covering the eight add-on shelves too.
+- `Includes_ReelShelf.xml`: shelves are `fixedlist` with `focusposition` 0, so the focused card stays at the left edge; episode cards show show title plus SxxEyy.
+- `Custom_1191_RSShelves.xml`, strings 31740: message when all slots are used.
+- To raise the shelf limit: add a slot N to Home.xml (ids 52xx/56xx), the manager (`RS_ManagerSlot`), `RS_ShelfNameN`, `RS_ShelfLink52xx`, and the lists `rs_has_shelves`, `rs_has_free_slot`, `rs_managing_shelf`, `RS_NextShelf`, `RS_ManagedPath`, `RS_ManagedLabel`, plus the `rs_relayout` timer; update `tools/test_build.py`.
+

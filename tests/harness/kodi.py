@@ -173,6 +173,12 @@ def shot(name):
             dst = SCREENS / f"{name}.png"
             dst.unlink(missing_ok=True)
             max(new, key=lambda p: p.stat().st_mtime).rename(dst)
+            try:  # Kodi's own screenshot is all black on this GPU/window; fall back to a desktop grab (Kodi is at 0,0)
+                from PIL import Image, ImageGrab
+                if Image.open(dst).convert("L").getextrema()[1] == 0:
+                    ImageGrab.grab(bbox=(0, 0, 2560, 1440)).save(dst)
+            except ImportError:
+                pass
             print(dst)
             return dst
     raise SystemExit("no screenshot appeared (check debug.screenshotpath)")

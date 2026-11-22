@@ -165,7 +165,7 @@
 		<value>$LOCALIZE[24001]</value>
 	</variable>
 	<variable name="RS_PreviewMeta">
-		<value condition="$EXP[rs_is_episode]">$VAR[RS_EpCode]$INFO[ListItem.Duration(mm),  ·  , min]</value>
+		<value condition="$EXP[rs_is_episode]">$VAR[RS_EpCode]$INFO[ListItem.Title,  ·  ]</value>
 		<value condition="String.IsEqual(ListItem.DBType,tvshow) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Year]$INFO[ListItem.Genre,  ·  ]</value>
 		<value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Genre]</value>
 		<value condition="!String.IsEmpty(ListItem.Year)">$INFO[ListItem.Year]$INFO[ListItem.Duration(mm),  ·  , min]$INFO[ListItem.MPAA,  ·  ]</value>
@@ -512,11 +512,13 @@
 				<include content="RS_ShelfStatus" condition="!$PARAM[library]">
 					<param name="id" value="$PARAM[id]" />
 					</include>
-				<control type="list" id="$PARAM[id]">
+				<control type="fixedlist" id="$PARAM[id]">
 					<top>44</top>
 					<width>1752</width>
 					<height>180</height>
 					<orientation>horizontal</orientation>
+					<focusposition>0</focusposition>
+					<movement>0</movement>
 					<scrolltime tween="cubic" easing="out">160</scrolltime>
 					<preloaditems>1</preloaditems>
 					<onup>$PARAM[up]</onup>
@@ -551,6 +553,17 @@
 							<font>font27</font>
 							<textcolor>rs_text</textcolor>
 							<label>$PARAM[label]</label>
+							<visible>!$EXP[rs_is_episode] | String.IsEmpty(ListItem.TVShowTitle)</visible>
+						</control>
+						<control type="label">
+							<left>314</left>
+							<top>16</top>
+							<width>308</width>
+							<height>38</height>
+							<font>font27</font>
+							<textcolor>rs_text</textcolor>
+							<label>$INFO[ListItem.TVShowTitle]</label>
+							<visible>$EXP[rs_is_episode] + !String.IsEmpty(ListItem.TVShowTitle)</visible>
 						</control>
 						<control type="label">
 							<left>314</left>

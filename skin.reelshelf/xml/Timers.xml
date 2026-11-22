@@ -16,6 +16,33 @@
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5) | Player.Playing</stop>
     </timer>
     <timer>
+        <name>rs_settle_fast</name>
+        <description>Ends the Home settle window (library shelves provisionally visible so they load; layout hidden meanwhile) once nothing is updating. Min 1 s. The 4 s alarm in Home.xml is the fallback.</description>
+        <start>Window.IsActive(home) + String.IsEmpty(Window(home).Property(rs_settled))</start>
+        <stop>Integer.IsGreater(Skin.TimerElapsedSecs(rs_settle_fast),0) + !Container(5010).IsUpdating + !Container(5020).IsUpdating + !Container(5100).IsUpdating + !Container(5110).IsUpdating + !Container(5120).IsUpdating + !Container(5130).IsUpdating + [Integer.IsGreater(Container(5100).NumItems,0) | Integer.IsGreater(Container(5110).NumItems,0) | Integer.IsGreater(Container(5120).NumItems,0) | Integer.IsGreater(Container(5130).NumItems,0)] | !Window.IsActive(home)</stop>
+        <onstop condition="Window.IsActive(home)">SetProperty(rs_settled,1,home)</onstop>
+    </timer>
+    <timer>
+        <name>rs_relayout</name>
+        <description>When the settle window ends the shelf list collapses; re-focus the focused shelf so the grouplist drops its stale scroll offset.</description>
+        <start>Window.IsActive(home) + !String.IsEmpty(Window(home).Property(rs_settled))</start>
+        <stop>!Window.IsActive(home) | String.IsEmpty(Window(home).Property(rs_settled))</stop>
+        <onstart condition="Control.HasFocus(5010)">SetFocus(5010,$INFO[Container(5010).Position])</onstart>
+        <onstart condition="Control.HasFocus(5020)">SetFocus(5020,$INFO[Container(5020).Position])</onstart>
+        <onstart condition="Control.HasFocus(5100)">SetFocus(5100,$INFO[Container(5100).Position])</onstart>
+        <onstart condition="Control.HasFocus(5110)">SetFocus(5110,$INFO[Container(5110).Position])</onstart>
+        <onstart condition="Control.HasFocus(5120)">SetFocus(5120,$INFO[Container(5120).Position])</onstart>
+        <onstart condition="Control.HasFocus(5130)">SetFocus(5130,$INFO[Container(5130).Position])</onstart>
+        <onstart condition="Control.HasFocus(5200)">SetFocus(5200,$INFO[Container(5200).Position])</onstart>
+        <onstart condition="Control.HasFocus(5201)">SetFocus(5201,$INFO[Container(5201).Position])</onstart>
+        <onstart condition="Control.HasFocus(5202)">SetFocus(5202,$INFO[Container(5202).Position])</onstart>
+        <onstart condition="Control.HasFocus(5203)">SetFocus(5203,$INFO[Container(5203).Position])</onstart>
+        <onstart condition="Control.HasFocus(5204)">SetFocus(5204,$INFO[Container(5204).Position])</onstart>
+        <onstart condition="Control.HasFocus(5205)">SetFocus(5205,$INFO[Container(5205).Position])</onstart>
+        <onstart condition="Control.HasFocus(5206)">SetFocus(5206,$INFO[Container(5206).Position])</onstart>
+        <onstart condition="Control.HasFocus(5207)">SetFocus(5207,$INFO[Container(5207).Position])</onstart>
+    </timer>
+    <timer>
         <name>rs_home_focus</name>
         <description>Recover Home focus when an initially loading or removed shelf leaves no focused control.</description>
         <start>Window.IsActive(home) + [String.IsEmpty(System.CurrentControlID) | [Control.HasFocus(9401) + !Control.IsVisible(9400)]]</start>

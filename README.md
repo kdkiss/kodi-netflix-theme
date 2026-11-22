@@ -30,13 +30,14 @@ Open **Add-ons > Install from zip file**, select your existing Reel Shelf source
 
 ## Add and manage shelves
 
-1. On Home, open **Shelves** and select **Add shelf**. On an empty Home, you can open **Add shelf** directly.
-2. Select an installed video add-on and open the folder you want. Press **Right** and select **Use this folder**. Repeat for each folder. For example, you can pin separate Movies, Most Watched TV, and Trakt Calendar folders if your add-on exposes them in its folder browser.
-3. To rename a shelf, change its folder, browse the full folder, or remove it, select its name in **Shelves**. The manager is also under **Settings > Interface > Skin > Configure skin > Reel Shelf**.
+1. On Home, open **Shelves** in the top menu. Select **+ Add shelf**. On an empty Home you can select **Add shelf** directly.
+2. In **Choose an add-on folder**, select an installed video add-on and open the folder you want (for example Movies > Trending, TV Shows > Most Watched, My Trakt > Calendar). Press **Right** and select **Use this folder**. Repeat for each folder.
+3. To change a shelf, select its name in **Shelves**: **Browse full shelf**, **Rename shelf**, **Change folder** (keeps the name) or **Remove shelf**. The manager is also reachable from an empty shelf's card and from **Settings > Interface > Skin > Configure skin > Reel Shelf**.
+4. Up to eight shelves fit. When all eight are used the manager shows "All eight shelf slots are in use. Remove a shelf to add another."
 
-Upgrading from 1.0 keeps the original shelf in the first slot. Each shelf previews up to 12 items, in the order the add-on provides, followed by a shortcut to the full folder. A temporarily empty shelf keeps its place on Home and can be managed from its card. Selecting a title or folder follows the add-on's normal Kodi behavior.
+Each shelf runs its add-on when Home opens, so a Fire TV Stick with many shelves, or an add-on that calls online services for every list (POV with Trakt), opens Home more slowly. Keep to the lists you use. Upgrading from 1.0 or 1.1 keeps your shelves and their names. Each shelf previews up to 12 items in the add-on's order, then a **Browse full shelf** card. A shelf that is loading shows "Loading..."; an empty one shows "Empty or unavailable" with a **Manage shelves** card.
 
-Press **Back** on a shelf to reach the top menu. Press **Down** to return to the last shelf. Local Movies and TV shows shortcuts appear under **More** when those libraries contain titles. Local Continue Watching cards resume from the saved position when selected. The title overview puts playback first, with the next unwatched episode beside the season and episode browser for local series.
+Press **Back** on a shelf to reach the top menu, **Down** to return to the shelf and card you left. **Up** from the first shelf also reaches the menu. Local Movies and TV shows shortcuts appear under **More** only when those libraries contain titles. Local Continue Watching cards resume from the saved position. The title overview puts playback first, with the next unwatched episode beside the season and episode browser for local series.
 
 ## Go back to Estuary
 

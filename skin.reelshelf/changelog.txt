@@ -1,3 +1,8 @@
+[B]1.1.1[/B]
+• Home layout is stable from the first frame: library shelves stay hidden until they have items, and the focused shelf is re-focused when the layout settles.
+• The focused card keeps its left edge in place while moving along a shelf, so one press moves exactly one card.
+• Episode cards show the show title and season/episode code. The manager says when all eight shelf slots are used.
+
 [B]1.1.0[/B]
 • Add and manage up to eight video add-on shelves, including the shelf carried over from 1.0.
 • Prioritize custom shelves on Home and show library shortcuts only when applicable.

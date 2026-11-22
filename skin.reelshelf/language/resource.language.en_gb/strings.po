@@ -1102,3 +1102,7 @@ msgstr ""
 msgctxt "#31739"
 msgid "Next episode"
 msgstr ""
+
+msgctxt "#31740"
+msgid "All eight shelf slots are in use. Remove a shelf to add another."
+msgstr ""

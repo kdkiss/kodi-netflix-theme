@@ -1,3 +1,44 @@
+# Reel Shelf 1.1.1 testing
+
+Portable Kodi 21.3 Omega on Windows, 2560x1440, remote-equivalent keys (JSON-RPC `Input.*`); JSON-RPC only for setup and reading state. Screenshots: `tests/out/screens/f11_*.png` (Kodi's own screenshot is black on this machine, so `kodi.py shot` falls back to a desktop capture).
+
+Test add-on now imitates POV: Movies > Trending (30 playable movies, poster+fanart, no landscape, some clearlogo), TV Shows > Most Watched (25 tvshow folders > seasons > episodes), My Trakt > Calendar (episodes with show title, season, episode, aired date), a 4 s folder, an empty folder.
+
+| Check | Desktop (Kodi 21.3) | Fire TV |
+| --- | --- | --- |
+| Library profile cold start, empty Continue Watching | PASS. Headings and gaps no longer appear; layout is identical at t=0, 1 and 2 s and focus is on the first Recently Added card (`f11_cold_lib_t0`-`t2`). | owner to test |
+| Focused-card movement | PASS. Left edge of the focused card stays at x=118 for 13 single presses 1 s apart (`tools`: `tests/harness/edge.py`); Right x10 then Left x10 end on the expected cards, one card per press (`f11_fixed_r10`). | owner to test |
+| Add-on only profile (`reset --empty`): add four shelves by keys, rename, remove, re-add, restart | PASS. Shelves persist in order; Change folder keeps the name (`f11_e_*`, `f11_j_cold_late`). | owner to test |
+| Cold start focus, no library headings | PASS. First card of the first shelf focused with outline. | owner to test |
+| Up/Down between shelves | PASS. Each shelf keeps its own card; focused card at the left edge in every shelf. | owner to test |
+| tvshow folder card > seasons > Back | PASS. Back returns to the same Home card (`f11_j_seasons`, `f11_j_back_same`). | owner to test |
+| Movie / calendar episode card > play > Stop | PASS. Same card focused after Stop. | owner to test |
+| Calendar card | PASS. Show title, SxxEyy and episode title (`f11_j_cal3`). | owner to test |
+| Browse full shelf card | PASS. Opens the folder in Videos; Back returns to the card. | owner to test |
+| Slow (4 s) shelf | PASS. Shows "Loading..."; focus stays on the first shelf; the layout below does not move under the focus. | owner to test |
+| Empty shelf | PASS. "Empty or unavailable" plus a Manage shelves card; reachable. (`f11_j_empty`) | owner to test |
+| Eight shelves | PASS. Eighth reachable; manager shows the full message (`f11_l_full`, `f11_l_home8`); Back then Down returns to it. | owner to test |
+| Top menu, Back | PASS. Shelves, Video add-ons, Favourites, More (Settings, Search) open; Back from a shelf goes to the menu, Down returns. | owner to test |
+| Upgrade 1.1.0 > 1.1.1 over UI install | PASS. Slot 1 shelf renamed "POV Shows" on 1.1.0 kept name and path after "Install from zip file" of 1.1.1 (`f11_u_zip3`). | owner to test |
+| Packaged ZIP, clean `reset --empty`, UI install | PASS. Add four shelves, restart, cold start, select/back, play/stop all as above (`f11_p_cold`). | owner to test |
+| kodi.log | No skin errors, missing includes or textures. | - |
+
+## What changed
+
+1. Library shelves were counted as visible during the settle window, so empty headings showed until a key press. The shelf list is now faded out until the settle ends, `rs_settle_fast` and `rs_relayout` are back (and cover the add-on shelves).
+2. The shelf was a `list`, so the focused card slid to the fourth slot and the row moved around it. It is a `fixedlist` with `focusposition` 0 now.
+3. Episode cards show show title and SxxEyy. The manager reports when all slots are used.
+
+## Shelf limit
+
+Eight slots: Home.xml (two ids each), Includes_ReelShelf.xml (name, link, lists), Custom_1191_RSShelves.xml, Timers.xml `rs_relayout`, `tools/test_build.py`. See `skin.reelshelf/UPSTREAM.md` for the checklist. Cost: every added slot adds one add-on run (Python start plus any web calls) on each Home load and about 12 art textures; on a Stick this is the limiting factor, not XML.
+
+## Not tested
+
+Fire TV hardware, real POV with a Trakt account, overscan, Fire remote mapping. Owner to test: first usable Home with their real shelves, Right x10 on a shelf, Select on a show then Back, Select on a movie then Stop, restart persistence.
+
+---
+
 # Reel Shelf 1.1 testing
 
 Verified on portable Kodi 21.3 Omega using the local test video add-on and synthetic media. The 1.0 release results follow below.

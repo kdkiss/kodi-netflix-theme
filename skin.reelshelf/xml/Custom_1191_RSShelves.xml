@@ -39,6 +39,15 @@
 				<onclick>SetProperty(rs_slot,$VAR[RS_NextShelf],home)</onclick>
 				<onclick>ActivateWindow(1190)</onclick>
 			</control>
+			<control type="label" id="219">
+				<width>750</width>
+				<height>68</height>
+				<aligny>center</aligny>
+				<font>font27</font>
+				<textcolor>rs_muted</textcolor>
+				<label>$LOCALIZE[31740]</label>
+				<visible>!$EXP[rs_has_free_slot]</visible>
+			</control>
 			<include content="RS_ManagerSlot">
 				<param name="id" value="211" />
 				<param name="name" value="$VAR[RS_ShelfName1]" />

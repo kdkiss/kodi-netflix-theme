@@ -863,3 +863,7 @@ msgstr "Leer oder nicht verfügbar"
 msgctxt "#31739"
 msgid "Next episode"
 msgstr "Nächste Folge"
+
+msgctxt "#31740"
+msgid "All eight shelf slots are in use. Remove a shelf to add another."
+msgstr "Alle acht Regalplätze sind belegt. Entferne ein Regal, um ein neues hinzuzufügen."
